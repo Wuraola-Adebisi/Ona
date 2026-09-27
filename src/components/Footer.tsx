@@ -4,34 +4,73 @@ import { Logo } from './Header'
 export default function Footer() {
   return (
     <footer className="bg-navy text-sand">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
           <Logo light />
-          <p className="mt-4 max-w-sm text-sand/75">
-            Travel planning should account for how you want to spend your time, not just where you could go.
+
+          <p className="mt-5 max-w-sm leading-relaxed text-sand/65">
+            Scene helps you turn the way you want to travel into a trip that
+            actually fits.
           </p>
+
+          <Link
+            to="/plan"
+            className="mt-7 inline-block rounded-full bg-sun px-6 py-3 font-bold text-navy transition-colors hover:bg-[#eaa060]"
+          >
+            Plan a trip
+          </Link>
         </div>
+
         <div>
-          <p className="font-bold">Explore</p>
-          <ul className="mt-3 space-y-2 text-sand/80">
-            <li><Link className="hover:text-sun" to="/plan">Plan a trip</Link></li>
-            <li><Link className="hover:text-sun" to="/how-it-works">How it works</Link></li>
-            <li><Link className="hover:text-sun" to="/examples">Examples</Link></li>
-            <li><Link className="hover:text-sun" to="/about">About</Link></li>
+          <p className="font-bold">Scene</p>
+
+          <ul className="mt-4 space-y-3 text-sand/70">
+            <li>
+              <Link className="hover:text-sun" to="/plan">
+                Plan a trip
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-sun" to="/how-it-works">
+                How it works
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-sun" to="/examples">
+                Trips
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-sun" to="/about">
+                About
+              </Link>
+            </li>
           </ul>
         </div>
+
         <div>
           <p className="font-bold">Legal</p>
-          <ul className="mt-3 space-y-2 text-sand/80">
-            <li><Link className="hover:text-sun" to="/privacy">Privacy</Link></li>
-            <li><Link className="hover:text-sun" to="/terms">Terms</Link></li>
+
+          <ul className="mt-4 space-y-3 text-sand/70">
+            <li>
+              <Link className="hover:text-sun" to="/privacy">
+                Privacy
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-sun" to="/terms">
+                Terms of Use
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
+
       <div className="border-t border-sand/15">
-        <p className="mx-auto max-w-6xl px-5 py-5 text-sm text-sand/60 sm:px-8">
-          Scene is a portfolio demo. Itineraries come from sample data for four cities and are not bookable.
-        </p>
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-5 text-sm text-sand/45 sm:px-8 sm:flex-row sm:items-center sm:justify-between">
+          <p>© 2026 Scene. All rights reserved.</p>
+          <p>Travel planning shaped around you.</p>
+        </div>
       </div>
     </footer>
   )

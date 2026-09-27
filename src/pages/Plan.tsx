@@ -1,10 +1,10 @@
-import { Minus, Plus, Sparkles } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import PreferencePills from '../components/PreferencePills'
-import SceneResult from '../components/SceneResult'
-import TripCard from '../components/TripCard'
-import { DESTINATIONS, getDestination } from '../data/destinations'
+import { Minus, Plus, Sparkles } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import PreferencePills from "../components/PreferencePills";
+import SceneResult from "../components/SceneResult";
+import TripCard from "../components/TripCard";
+import { DESTINATIONS, getDestination } from "../data/destinations";
 import {
   AVOID_LABELS,
   INTEREST_LABELS,
@@ -14,7 +14,7 @@ import {
   buildScene,
   describeParsed,
   readBrief,
-} from '../engine/sceneEngine'
+} from "../engine/sceneEngine";
 import type {
   Avoid,
   Brief,
@@ -22,54 +22,54 @@ import type {
   Interest,
   Pace,
   Scene,
-} from '../types'
+} from "../types";
 
 const PLACEHOLDER =
-  'Four days in Lisbon. I love architecture, food and cafés, I want to see the important stuff, but I do not want to rush around all day.'
+  "Four days in Lisbon. I love architecture, food and cafés, I want to see the important stuff, but I do not want to rush around all day.";
 
-const unique = <T,>(items: T[]) => [...new Set(items)]
+const unique = <T,>(items: T[]) => [...new Set(items)];
 
 const toggle = <T,>(list: T[], value: T) =>
   list.includes(value)
     ? list.filter((item) => item !== value)
-    : [...list, value]
+    : [...list, value];
 
 export default function Plan() {
-  const location = useLocation()
-  const prefill = (location.state as { brief?: Brief } | null)?.brief
+  const location = useLocation();
+  const prefill = (location.state as { brief?: Brief } | null)?.brief;
 
-  const [text, setText] = useState('')
+  const [text, setText] = useState("");
   const [destId, setDestId] = useState<DestinationId>(
-    prefill?.destination ?? 'lisbon',
-  )
-  const [days, setDays] = useState(prefill?.days ?? 4)
+    prefill?.destination ?? "lisbon",
+  );
+  const [days, setDays] = useState(prefill?.days ?? 4);
   const [interests, setInterests] = useState<Interest[]>(
     prefill?.interests ?? [],
-  )
-  const [pace, setPace] = useState<Pace>(prefill?.pace ?? 'relaxed')
-  const [avoid, setAvoid] = useState<Avoid[]>(prefill?.avoid ?? [])
-  const [scene, setScene] = useState<Scene | null>(null)
-  const [building, setBuilding] = useState(false)
+  );
+  const [pace, setPace] = useState<Pace>(prefill?.pace ?? "relaxed");
+  const [avoid, setAvoid] = useState<Avoid[]>(prefill?.avoid ?? []);
+  const [scene, setScene] = useState<Scene | null>(null);
+  const [building, setBuilding] = useState(false);
 
-  const timer = useRef<number | undefined>(undefined)
+  const timer = useRef<number | undefined>(undefined);
 
-  const parsed = useMemo(() => readBrief(text), [text])
-  const chips = describeParsed(parsed)
-  const destination = getDestination(destId)
-  const maxDays = destination.zones.length
-
-  useEffect(() => {
-    return () => window.clearTimeout(timer.current)
-  }, [])
+  const parsed = useMemo(() => readBrief(text), [text]);
+  const chips = describeParsed(parsed);
+  const destination = getDestination(destId);
+  const maxDays = destination.zones.length;
 
   useEffect(() => {
-    if (!parsed.destination) return
+    return () => window.clearTimeout(timer.current);
+  }, []);
 
-    setDestId(parsed.destination)
+  useEffect(() => {
+    if (!parsed.destination) return;
+
+    setDestId(parsed.destination);
     setDays((current) =>
       Math.min(current, getDestination(parsed.destination!).zones.length),
-    )
-  }, [parsed.destination])
+    );
+  }, [parsed.destination]);
 
   useEffect(() => {
     if (parsed.days) {
@@ -78,13 +78,13 @@ export default function Plan() {
           parsed.days,
           getDestination(parsed.destination ?? destId).zones.length,
         ),
-      )
+      );
     }
-  }, [parsed.days, parsed.destination, destId])
+  }, [parsed.days, parsed.destination, destId]);
 
   useEffect(() => {
-    if (parsed.pace) setPace(parsed.pace)
-  }, [parsed.pace])
+    if (parsed.pace) setPace(parsed.pace);
+  }, [parsed.pace]);
 
   const merged = (): Brief => ({
     destination: destId,
@@ -92,30 +92,30 @@ export default function Plan() {
     interests: unique([...parsed.interests, ...interests]),
     pace,
     avoid: unique([...parsed.avoid, ...avoid]),
-  })
+  });
 
   const applyParsed = (): Brief => {
-    const brief = merged()
+    const brief = merged();
 
-    setDestId(brief.destination)
-    setDays(brief.days)
-    setInterests(brief.interests)
-    setPace(brief.pace)
-    setAvoid(brief.avoid)
+    setDestId(brief.destination);
+    setDays(brief.days);
+    setInterests(brief.interests);
+    setPace(brief.pace);
+    setAvoid(brief.avoid);
 
-    return brief
-  }
+    return brief;
+  };
 
   const build = (brief: Brief) => {
-    setBuilding(true)
+    setBuilding(true);
 
     timer.current = window.setTimeout(() => {
-      setScene(buildScene(brief))
-      setBuilding(false)
-    }, 900)
-  }
+      setScene(buildScene(brief));
+      setBuilding(false);
+    }, 900);
+  };
 
-  const canBuild = merged().interests.length > 0
+  const canBuild = merged().interests.length > 0;
 
   if (scene) {
     return (
@@ -123,11 +123,11 @@ export default function Plan() {
         scene={scene}
         onChange={setScene}
         action={{
-          label: 'Change my trip',
+          label: "Change my trip",
           onClick: () => setScene(null),
         }}
       />
-    )
+    );
   }
 
   if (building) {
@@ -147,9 +147,9 @@ export default function Plan() {
 
           <div className="mt-10 space-y-4 text-lg text-sand/70">
             {[
-              'Reading your preferences',
-              'Choosing places that fit',
-              'Sequencing the days',
+              "Reading your preferences",
+              "Choosing places that fit",
+              "Sequencing the days",
             ].map((item) => (
               <div key={item} className="flex items-center gap-3">
                 <span className="size-2 rounded-full bg-sun animate-pulse" />
@@ -159,7 +159,7 @@ export default function Plan() {
           </div>
         </div>
       </section>
-    )
+    );
   }
 
   return (
@@ -175,9 +175,9 @@ export default function Plan() {
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy/70">
-            Start with a sentence. Tell Scene where you are going, how long
-            you have, what you care about and anything you already know you
-            want to avoid.
+            Start with a sentence. Tell Scene where you are going, how long you
+            have, what you care about and anything you already know you want to
+            avoid.
           </p>
         </div>
 
@@ -199,15 +199,11 @@ export default function Plan() {
               className="mt-3 w-full resize-y border-2 border-navy bg-linen p-6 text-lg leading-relaxed placeholder:text-navy/40 focus:border-sun focus:outline-none"
             />
 
-            <div
-              className="mt-4 min-h-12"
-              aria-live="polite"
-            >
+            <div className="mt-4 min-h-12" aria-live="polite">
               {parsed.unknownPlace && (
                 <p className="border-l-4 border-sun bg-sun/15 px-4 py-3 text-sm">
                   Scene does not have {parsed.unknownPlace} in its current
-                  destination library. You can choose another destination
-                  below.
+                  destination library. You can choose another destination below.
                 </p>
               )}
 
@@ -232,8 +228,8 @@ export default function Plan() {
               <div>
                 <p className="font-bold">You can be vague.</p>
                 <p className="mt-1 text-sm leading-relaxed text-navy/65">
-                  Scene is built to work from the way you naturally describe
-                  a trip. You can refine the details below if you want more
+                  Scene is built to work from the way you naturally describe a
+                  trip. You can refine the details below if you want more
                   control.
                 </p>
               </div>
@@ -243,11 +239,9 @@ export default function Plan() {
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-navy/50">
                 Currently planning
               </p>
-              <p className="mt-2 font-display text-2xl">
-                {destination.name}
-              </p>
+              <p className="mt-2 font-display text-2xl">{destination.name}</p>
               <p className="text-sm text-navy/65">
-                {days} {days === 1 ? 'day' : 'days'}
+                {days} {days === 1 ? "day" : "days"}
               </p>
             </div>
           </aside>
@@ -287,10 +281,10 @@ export default function Plan() {
                     type="button"
                     aria-pressed={destId === item.id}
                     onClick={() => {
-                      setDestId(item.id)
+                      setDestId(item.id);
                       setDays((current) =>
                         Math.min(current, item.zones.length),
-                      )
+                      );
                     }}
                     className="text-left"
                   >
@@ -316,7 +310,9 @@ export default function Plan() {
                     type="button"
                     aria-label="One day fewer"
                     disabled={days <= 1}
-                    onClick={() => setDays((current) => Math.max(1, current - 1))}
+                    onClick={() =>
+                      setDays((current) => Math.max(1, current - 1))
+                    }
                     className="grid size-11 place-items-center transition-colors hover:bg-navy hover:text-sand disabled:opacity-30"
                   >
                     <Minus size={18} />
@@ -326,7 +322,7 @@ export default function Plan() {
                     className="tnum min-w-24 text-center font-bold"
                     aria-live="polite"
                   >
-                    {days} {days === 1 ? 'day' : 'days'}
+                    {days} {days === 1 ? "day" : "days"}
                   </span>
 
                   <button
@@ -375,7 +371,7 @@ export default function Plan() {
                   aria-label="Trip pace"
                   className="mt-4 grid gap-3"
                 >
-                  {(['relaxed', 'balanced', 'packed'] as Pace[]).map(
+                  {(["relaxed", "balanced", "packed"] as Pace[]).map(
                     (option) => (
                       <button
                         key={option}
@@ -384,8 +380,8 @@ export default function Plan() {
                         onClick={() => setPace(option)}
                         className={`border-2 p-4 text-left transition-colors ${
                           pace === option
-                            ? 'border-navy bg-navy text-sand'
-                            : 'border-navy/25 bg-linen hover:border-navy'
+                            ? "border-navy bg-navy text-sand"
+                            : "border-navy/25 bg-linen hover:border-navy"
                         }`}
                       >
                         <span className="block font-display text-xl">
@@ -393,9 +389,7 @@ export default function Plan() {
                         </span>
                         <span
                           className={`mt-1 block text-sm ${
-                            pace === option
-                              ? 'text-sand/70'
-                              : 'text-navy/65'
+                            pace === option ? "text-sand/70" : "text-navy/65"
                           }`}
                         >
                           {PACE_BLURBS[option]}
@@ -446,5 +440,5 @@ export default function Plan() {
         </div>
       </section>
     </div>
-  )
+  );
 }

@@ -1,38 +1,36 @@
-import { ArrowRight } from 'lucide-react'
-import { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import SceneResult from '../components/SceneResult'
-import TripCard from '../components/TripCard'
-import { getDestination } from '../data/destinations'
-import { EXAMPLES, type Example } from '../data/examples'
-import { PACE_LABELS, buildScene } from '../engine/sceneEngine'
-import type { DestinationId, Scene } from '../types'
+import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import SceneResult from "../components/SceneResult";
+import TripCard from "../components/TripCard";
+import { getDestination } from "../data/destinations";
+import { EXAMPLES, type Example } from "../data/examples";
+import { PACE_LABELS, buildScene } from "../engine/sceneEngine";
+import type { DestinationId, Scene } from "../types";
 
 function ExampleTrip({ example }: { example: Example }) {
-  const navigate = useNavigate()
-  const [scene, setScene] = useState<Scene>(() =>
-    buildScene(example.brief),
-  )
+  const navigate = useNavigate();
+  const [scene, setScene] = useState<Scene>(() => buildScene(example.brief));
 
   return (
     <SceneResult
       scene={scene}
       onChange={setScene}
       action={{
-        label: 'Build my own trip',
+        label: "Build my own trip",
         onClick: () =>
-          navigate('/plan', {
+          navigate("/plan", {
             state: { brief: example.brief },
           }),
       }}
     />
-  )
+  );
 }
 
 export default function Examples() {
-  const [params, setParams] = useSearchParams()
-  const requested = params.get('trip') as DestinationId | null
-  const current = EXAMPLES.find((item) => item.id === requested) ?? EXAMPLES[0]
+  const [params, setParams] = useSearchParams();
+  const requested = params.get("trip") as DestinationId | null;
+  const current = EXAMPLES.find((item) => item.id === requested) ?? EXAMPLES[0];
 
   return (
     <div>
@@ -46,9 +44,9 @@ export default function Examples() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy/70">
-          These are starting points, not fixed itineraries. Open one to see
-          how a particular set of preferences shapes the days, then change
-          the mood or build your own trip.
+          These are starting points, not fixed itineraries. Open one to see how
+          a particular set of preferences shapes the days, then change the mood
+          or build your own trip.
         </p>
 
         <div
@@ -61,9 +59,7 @@ export default function Examples() {
               key={example.id}
               type="button"
               aria-pressed={current.id === example.id}
-              onClick={() =>
-                setParams({ trip: example.id }, { replace: true })
-              }
+              onClick={() => setParams({ trip: example.id }, { replace: true })}
               className="text-left"
             >
               <TripCard
@@ -105,7 +101,7 @@ export default function Examples() {
 
           <button
             type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="inline-flex items-center gap-2 font-bold underline decoration-navy decoration-2 underline-offset-8"
           >
             Choose another trip
@@ -114,5 +110,5 @@ export default function Examples() {
         </div>
       </section>
     </div>
-  )
+  );
 }

@@ -1,32 +1,32 @@
-import { ArrowRight, Check, Compass, SlidersHorizontal } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import DestinationArt from '../components/DestinationArt'
-import TripCard from '../components/TripCard'
-import { getDestination } from '../data/destinations'
-import { EXAMPLES } from '../data/examples'
-import { buildScene, PACE_LABELS } from '../engine/sceneEngine'
+import { ArrowRight, Check, Compass, SlidersHorizontal } from "lucide-react";
+import { Link } from "react-router-dom";
+import DestinationArt from "../components/DestinationArt";
+import TripCard from "../components/TripCard";
+import { getDestination } from "../data/destinations";
+import { EXAMPLES } from "../data/examples";
+import { buildScene, PACE_LABELS } from "../engine/sceneEngine";
 
-const lisbonScene = buildScene(EXAMPLES[0].brief)
-const destination = lisbonScene.destination
-const firstDay = lisbonScene.days[0]
+const lisbonScene = buildScene(EXAMPLES[0].brief);
+const destination = lisbonScene.destination;
+const firstDay = lisbonScene.days[0];
 
 const BENEFITS = [
   {
-    number: '01',
-    title: 'Tell it what matters',
-    body: 'Describe the trip in your own words. Scene picks up the things that matter to you, from architecture and food to how much moving around you can tolerate.',
+    number: "01",
+    title: "Tell it what matters",
+    body: "Describe the trip in your own words. Scene picks up the things that matter to you, from architecture and food to how much moving around you can tolerate.",
   },
   {
-    number: '02',
-    title: 'Get a trip that fits',
-    body: 'Scene turns those preferences into a realistic day-by-day plan, grouping places that make sense together and leaving room to actually enjoy them.',
+    number: "02",
+    title: "Get a trip that fits",
+    body: "Scene turns those preferences into a realistic day-by-day plan, grouping places that make sense together and leaving room to actually enjoy them.",
   },
   {
-    number: '03',
-    title: 'Change the plan without starting over',
-    body: 'Plans change. Make a day slower, swap it for a rainy-day version, or ease up when you are tired. Scene adjusts the day around the change.',
+    number: "03",
+    title: "Change the plan without starting over",
+    body: "Plans change. Make a day slower, swap it for a rainy-day version, or ease up when you are tired. Scene adjusts the day around the change.",
   },
-]
+];
 
 export default function Home() {
   return (
@@ -42,9 +42,9 @@ export default function Home() {
           </h1>
 
           <p className="mt-8 max-w-xl text-xl leading-relaxed text-navy/75">
-            Tell Scene where you are going, what you care about, what you
-            would rather avoid, and how you want your days to feel. It builds
-            the itinerary around those things.
+            Tell Scene where you are going, what you care about, what you would
+            rather avoid, and how you want your days to feel. It builds the
+            itinerary around those things.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -101,10 +101,7 @@ export default function Home() {
 
               <ol className="mt-3 space-y-2">
                 {firstDay.items.slice(0, 4).map((item) => (
-                  <li
-                    key={item.activity.id}
-                    className="flex gap-3 text-sm"
-                  >
+                  <li key={item.activity.id} className="flex gap-3 text-sm">
                     <span className="tnum w-11 shrink-0 font-bold text-sun-deep">
                       {item.start}
                     </span>
@@ -130,8 +127,8 @@ export default function Home() {
 
             <p className="mt-6 text-lg leading-relaxed text-sand/75">
               You probably already have saved posts, map pins, recommendations
-              from friends and a vague idea of what you want. The difficult
-              part is turning all of that into days that actually work together.
+              from friends and a vague idea of what you want. The difficult part
+              is turning all of that into days that actually work together.
             </p>
           </div>
 
@@ -144,12 +141,8 @@ export default function Home() {
                 <span className="tnum text-sm font-bold text-sun">
                   {item.number}
                 </span>
-                <h3 className="mt-6 font-display text-3xl">
-                  {item.title}
-                </h3>
-                <p className="mt-4 leading-relaxed text-sand/70">
-                  {item.body}
-                </p>
+                <h3 className="mt-6 font-display text-3xl">{item.title}</h3>
+                <p className="mt-4 leading-relaxed text-sand/70">{item.body}</p>
               </article>
             ))}
           </div>
@@ -168,10 +161,10 @@ export default function Home() {
             </h2>
 
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-navy/70">
-              “I do not want to rush” should mean something more than a
-              sentence in a prompt. It should change how many major stops you
-              get, how much travel is between them and how much room the day
-              has to breathe.
+              “I do not want to rush” should mean something more than a sentence
+              in a prompt. It should change how many major stops you get, how
+              much travel is between them and how much room the day has to
+              breathe.
             </p>
 
             <Link
@@ -202,16 +195,13 @@ export default function Home() {
 
                 <ul className="mt-5 space-y-4">
                   {[
-                    'Fewer cross-city journeys',
-                    'Neighbourhood-based days',
-                    'A manageable number of major stops',
-                    'More time where it matters',
+                    "Fewer cross-city journeys",
+                    "Neighbourhood-based days",
+                    "A manageable number of major stops",
+                    "More time where it matters",
                   ].map((item) => (
                     <li key={item} className="flex gap-3">
-                      <Check
-                        size={18}
-                        className="mt-0.5 shrink-0 text-sun"
-                      />
+                      <Check size={18} className="mt-0.5 shrink-0 text-sun" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -283,5 +273,5 @@ export default function Home() {
         </div>
       </section>
     </div>
-  )
+  );
 }
