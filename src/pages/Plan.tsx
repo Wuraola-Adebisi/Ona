@@ -1,4 +1,4 @@
-import { Minus, Plus } from 'lucide-react'
+import { Minus, Plus, Sparkles } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import PreferencePills from '../components/PreferencePills'
@@ -15,52 +15,73 @@ import {
   describeParsed,
   readBrief,
 } from '../engine/sceneEngine'
-import type { Avoid, Brief, DestinationId, Interest, Pace, Scene } from '../types'
+import type {
+  Avoid,
+  Brief,
+  DestinationId,
+  Interest,
+  Pace,
+  Scene,
+} from '../types'
 
-const STEPS = ['Destination', 'Your style', 'Your scene']
 const PLACEHOLDER =
-  'I\u2019m going to Lisbon for four days with my girlfriend. We like architecture, food and cafés. We want to see the important stuff but don\u2019t want to rush. One beach day would be nice.'
+  'Four days in Lisbon. I love architecture, food and cafés, I want to see the important stuff, but I do not want to rush around all day.'
 
-const unique = <T,>(a: T[]): T[] => [...new Set(a)]
-const toggle = <T,>(list: T[], v: T): T[] => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v])
+const unique = <T,>(items: T[]) => [...new Set(items)]
+
+const toggle = <T,>(list: T[], value: T) =>
+  list.includes(value)
+    ? list.filter((item) => item !== value)
+    : [...list, value]
 
 export default function Plan() {
   const location = useLocation()
   const prefill = (location.state as { brief?: Brief } | null)?.brief
 
-  const [step, setStep] = useState(0)
   const [text, setText] = useState('')
-  const [destId, setDestId] = useState<DestinationId>(prefill?.destination ?? 'lisbon')
+  const [destId, setDestId] = useState<DestinationId>(
+    prefill?.destination ?? 'lisbon',
+  )
   const [days, setDays] = useState(prefill?.days ?? 4)
-  const [interests, setInterests] = useState<Interest[]>(prefill?.interests ?? [])
+  const [interests, setInterests] = useState<Interest[]>(
+    prefill?.interests ?? [],
+  )
   const [pace, setPace] = useState<Pace>(prefill?.pace ?? 'relaxed')
   const [avoid, setAvoid] = useState<Avoid[]>(prefill?.avoid ?? [])
   const [scene, setScene] = useState<Scene | null>(null)
   const [building, setBuilding] = useState(false)
+
   const timer = useRef<number | undefined>(undefined)
 
   const parsed = useMemo(() => readBrief(text), [text])
   const chips = describeParsed(parsed)
+  const destination = getDestination(destId)
+  const maxDays = destination.zones.length
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [step])
-  useEffect(() => () => window.clearTimeout(timer.current), [])
+    return () => window.clearTimeout(timer.current)
+  }, [])
 
-  const dest = getDestination(destId)
-  const maxDays = dest.zones.length
-
-  // Words in the box set the controls below; the controls can still be changed afterwards.
   useEffect(() => {
-    if (parsed.destination) {
-      setDestId(parsed.destination)
-      setDays((d) => Math.min(d, getDestination(parsed.destination!).zones.length))
-    }
+    if (!parsed.destination) return
+
+    setDestId(parsed.destination)
+    setDays((current) =>
+      Math.min(current, getDestination(parsed.destination!).zones.length),
+    )
   }, [parsed.destination])
+
   useEffect(() => {
-    if (parsed.days) setDays(Math.min(parsed.days, getDestination(parsed.destination ?? destId).zones.length))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsed.days])
+    if (parsed.days) {
+      setDays(
+        Math.min(
+          parsed.days,
+          getDestination(parsed.destination ?? destId).zones.length,
+        ),
+      )
+    }
+  }, [parsed.days, parsed.destination, destId])
+
   useEffect(() => {
     if (parsed.pace) setPace(parsed.pace)
   }, [parsed.pace])
@@ -73,45 +94,69 @@ export default function Plan() {
     avoid: unique([...parsed.avoid, ...avoid]),
   })
 
-  const applyText = (): Brief => {
-    const b = merged()
-    setDestId(b.destination)
-    setDays(b.days)
-    setInterests(b.interests)
-    setPace(b.pace)
-    setAvoid(b.avoid)
-    return b
+  const applyParsed = (): Brief => {
+    const brief = merged()
+
+    setDestId(brief.destination)
+    setDays(brief.days)
+    setInterests(brief.interests)
+    setPace(brief.pace)
+    setAvoid(brief.avoid)
+
+    return brief
   }
 
-  const build = (b: Brief) => {
+  const build = (brief: Brief) => {
     setBuilding(true)
-    timer.current = window.setTimeout(() => {
-      setScene(buildScene(b))
-      setStep(2)
-      setBuilding(false)
-    }, 1100)
-  }
 
-  const pickDestination = (id: DestinationId) => {
-    setDestId(id)
-    setDays((d) => Math.min(d, getDestination(id).zones.length))
+    timer.current = window.setTimeout(() => {
+      setScene(buildScene(brief))
+      setBuilding(false)
+    }, 900)
   }
 
   const canBuild = merged().interests.length > 0
 
+  if (scene) {
+    return (
+      <SceneResult
+        scene={scene}
+        onChange={setScene}
+        action={{
+          label: 'Change my trip',
+          onClick: () => setScene(null),
+        }}
+      />
+    )
+  }
+
   if (building) {
     return (
-      <section className="grid min-h-[70vh] place-items-center bg-navy px-5 text-sand" aria-live="polite">
-        <div>
-          <p className="font-display text-4xl sm:text-5xl">Building your scene</p>
-          <ul className="mt-6 space-y-2 text-lg text-sand/80">
-            {['Reading your brief', 'Setting the pace', 'Sequencing the days'].map((t, i) => (
-              <li key={t} className="flex items-center gap-3">
-                <span className="size-2.5 animate-pulse rounded-full bg-sun" style={{ animationDelay: `${i * 250}ms` }} aria-hidden />
-                {t}
-              </li>
+      <section className="grid min-h-[75vh] place-items-center bg-navy px-5 text-sand">
+        <div className="w-full max-w-xl">
+          <div className="flex items-center gap-3 text-sun">
+            <Sparkles size={20} />
+            <span className="text-sm font-bold uppercase tracking-[0.16em]">
+              Working on your trip
+            </span>
+          </div>
+
+          <h1 className="mt-6 font-display text-5xl leading-none sm:text-7xl">
+            Putting the days together.
+          </h1>
+
+          <div className="mt-10 space-y-4 text-lg text-sand/70">
+            {[
+              'Reading your preferences',
+              'Choosing places that fit',
+              'Sequencing the days',
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-3">
+                <span className="size-2 rounded-full bg-sun animate-pulse" />
+                {item}
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
     )
@@ -119,212 +164,287 @@ export default function Plan() {
 
   return (
     <div>
-      <div className="border-b border-navy/15">
-        <ol className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-5 py-4 sm:gap-6 sm:px-8" aria-label="Progress">
-          {STEPS.map((label, i) => {
-            const reachable = i <= step && (i < 2 || scene)
-            return (
-              <li key={label} className="shrink-0">
-                <button
-                  type="button"
-                  disabled={!reachable}
-                  aria-current={i === step ? 'step' : undefined}
-                  onClick={() => reachable && setStep(i)}
-                  className={`flex items-center gap-2.5 border-b-2 py-1 font-medium ${
-                    i === step ? 'border-sun' : 'border-transparent'
-                  } ${reachable ? '' : 'text-navy/40'}`}
-                >
-                  <span className="tnum font-bold">{String(i + 1).padStart(2, '0')}</span>
-                  {label}
-                </button>
-              </li>
-            )
-          })}
-        </ol>
-      </div>
-
-      {step === 0 && (
-        <section className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
-          <h1 className="font-display text-5xl leading-none sm:text-6xl">Tell Scene about your trip.</h1>
-          <p className="mt-4 max-w-2xl text-lg text-navy/75">
-            Write it the way you would tell a friend: where, how long, what you like, and what you would rather skip.
+      <section className="mx-auto max-w-6xl px-5 pb-16 pt-12 sm:px-8 sm:pb-24 sm:pt-16">
+        <div className="max-w-3xl">
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-sun-deep">
+            Build your trip
           </p>
 
-          <label htmlFor="brief" className="sr-only">Your trip</label>
-          <textarea
-            id="brief"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={5}
-            placeholder={PLACEHOLDER}
-            className="mt-8 w-full resize-y border-2 border-navy bg-linen p-5 text-lg leading-relaxed placeholder:text-navy/45 focus:outline-none focus-visible:border-sun"
-          />
+          <h1 className="mt-4 font-display text-5xl leading-[0.95] sm:text-7xl">
+            What do you want this trip to be like?
+          </h1>
 
-          <div className="mt-4 min-h-14" aria-live="polite">
-            {parsed.unknownPlace && (
-              <p className="mb-3 border-l-4 border-sun bg-sun/20 px-4 py-2.5">
-                Scene only has sample data for Lisbon, Tokyo, New York and Cape Town, so {parsed.unknownPlace} is not available yet.
-                Pick one of the four below.
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy/70">
+            Start with a sentence. Tell Scene where you are going, how long
+            you have, what you care about and anything you already know you
+            want to avoid.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-start">
+          <div>
+            <label
+              htmlFor="trip-brief"
+              className="text-sm font-bold uppercase tracking-[0.14em]"
+            >
+              Your trip
+            </label>
+
+            <textarea
+              id="trip-brief"
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              rows={7}
+              placeholder={PLACEHOLDER}
+              className="mt-3 w-full resize-y border-2 border-navy bg-linen p-6 text-lg leading-relaxed placeholder:text-navy/40 focus:border-sun focus:outline-none"
+            />
+
+            <div
+              className="mt-4 min-h-12"
+              aria-live="polite"
+            >
+              {parsed.unknownPlace && (
+                <p className="border-l-4 border-sun bg-sun/15 px-4 py-3 text-sm">
+                  Scene does not have {parsed.unknownPlace} in its current
+                  destination library. You can choose another destination
+                  below.
+                </p>
+              )}
+
+              {chips.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {chips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="rounded-full bg-mist px-3 py-1.5 text-sm font-medium"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <aside className="bg-linen p-5 sm:p-6">
+            <div className="flex items-start gap-3">
+              <Sparkles className="mt-0.5 shrink-0 text-sun-deep" size={19} />
+              <div>
+                <p className="font-bold">You can be vague.</p>
+                <p className="mt-1 text-sm leading-relaxed text-navy/65">
+                  Scene is built to work from the way you naturally describe
+                  a trip. You can refine the details below if you want more
+                  control.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 border-t border-navy/15 pt-5">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-navy/50">
+                Currently planning
               </p>
-            )}
-            {chips.length > 0 ? (
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm font-bold">Scene picked up</span>
-                {chips.map((c) => (
-                  <span key={c} className="rounded-full bg-mist px-3 py-1 text-sm font-medium">{c}</span>
+              <p className="mt-2 font-display text-2xl">
+                {destination.name}
+              </p>
+              <p className="text-sm text-navy/65">
+                {days} {days === 1 ? 'day' : 'days'}
+              </p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section className="border-y border-navy/15 bg-sand-deep">
+        <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.14em] text-sun-deep">
+                Refine it
+              </p>
+              <h2 className="mt-2 font-display text-3xl sm:text-4xl">
+                Give Scene a little more direction.
+              </h2>
+            </div>
+
+            <p className="max-w-md text-sm leading-relaxed text-navy/65">
+              Anything you already wrote above is included. These controls
+              simply give you another way to shape the result.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-12 lg:grid-cols-2">
+            <div>
+              <h3 className="font-display text-2xl">Where are you going?</h3>
+
+              <div
+                className="mt-5 grid grid-cols-2 gap-4"
+                role="group"
+                aria-label="Destination"
+              >
+                {DESTINATIONS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-pressed={destId === item.id}
+                    onClick={() => {
+                      setDestId(item.id)
+                      setDays((current) =>
+                        Math.min(current, item.zones.length),
+                      )
+                    }}
+                    className="text-left"
+                  >
+                    <TripCard
+                      destination={item}
+                      meta={item.country}
+                      selected={destId === item.id}
+                      compact
+                    />
+                  </button>
                 ))}
               </div>
-            ) : (
-              <p className="text-sm text-navy/60">Scene reads your words as you type and turns them into planning constraints.</p>
-            )}
-          </div>
 
-          <div className="mt-10 border-t-2 border-navy pt-8">
-            <h2 className="font-display text-3xl">Or set it yourself</h2>
-            <div role="group" aria-label="Destination" className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">
-              {DESTINATIONS.map((d) => (
-                <button
-                  key={d.id}
-                  type="button"
-                  aria-pressed={destId === d.id}
-                  onClick={() => pickDestination(d.id)}
-                  className="text-left"
-                >
-                  <TripCard destination={d} meta={d.country} selected={destId === d.id} compact />
-                </button>
-              ))}
-            </div>
+              <div className="mt-7 flex flex-wrap items-center gap-4">
+                <span className="font-bold">How long?</span>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <span className="font-bold" id="days-label">How long?</span>
-              <div className="inline-flex items-center border-2 border-navy" role="group" aria-labelledby="days-label">
-                <button
-                  type="button"
-                  aria-label="One day fewer"
-                  onClick={() => setDays((d) => Math.max(1, d - 1))}
-                  className="grid size-11 place-items-center hover:bg-navy hover:text-sand"
+                <div
+                  className="inline-flex items-center border-2 border-navy"
+                  role="group"
+                  aria-label="Trip length"
                 >
-                  <Minus size={18} />
-                </button>
-                <span className="tnum min-w-24 text-center font-bold" aria-live="polite">
-                  {days} {days === 1 ? 'day' : 'days'}
-                </span>
-                <button
-                  type="button"
-                  aria-label="One day more"
-                  onClick={() => setDays((d) => Math.min(maxDays, d + 1))}
-                  className="grid size-11 place-items-center hover:bg-navy hover:text-sand"
-                >
-                  <Plus size={18} />
-                </button>
+                  <button
+                    type="button"
+                    aria-label="One day fewer"
+                    disabled={days <= 1}
+                    onClick={() => setDays((current) => Math.max(1, current - 1))}
+                    className="grid size-11 place-items-center transition-colors hover:bg-navy hover:text-sand disabled:opacity-30"
+                  >
+                    <Minus size={18} />
+                  </button>
+
+                  <span
+                    className="tnum min-w-24 text-center font-bold"
+                    aria-live="polite"
+                  >
+                    {days} {days === 1 ? 'day' : 'days'}
+                  </span>
+
+                  <button
+                    type="button"
+                    aria-label="One day more"
+                    disabled={days >= maxDays}
+                    onClick={() =>
+                      setDays((current) => Math.min(maxDays, current + 1))
+                    }
+                    className="grid size-11 place-items-center transition-colors hover:bg-navy hover:text-sand disabled:opacity-30"
+                  >
+                    <Plus size={18} />
+                  </button>
+                </div>
               </div>
-              <span className="text-sm text-navy/65">Up to {maxDays} days for {dest.name} in this demo.</span>
             </div>
-          </div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <button
-              type="button"
-              onClick={() => {
-                applyText()
-                setStep(1)
-              }}
-              className="rounded-full bg-navy px-7 py-3.5 font-medium text-sand transition-colors hover:bg-navy-soft"
-            >
-              Continue
-            </button>
-            {canBuild && (
-              <button
-                type="button"
-                onClick={() => build(applyText())}
-                className="rounded-full border-2 border-navy px-7 py-3 font-medium transition-colors hover:bg-navy hover:text-sand"
-              >
-                Build my scene now
-              </button>
-            )}
-          </div>
-        </section>
-      )}
+            <div>
+              <h3 className="font-display text-2xl">What matters to you?</h3>
+              <p className="mt-1 text-sm text-navy/65">
+                Pick as many as you like. The first two carry the most weight.
+              </p>
 
-      {step === 1 && (
-        <section className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
-          <h1 className="font-display text-5xl leading-none sm:text-6xl">What is this trip for?</h1>
-          <p className="mt-4 max-w-2xl text-lg text-navy/75">
-            {dest.name}, {days} {days === 1 ? 'day' : 'days'}. Choose what you care about and how it should feel.
-          </p>
+              <div className="mt-5">
+                <PreferencePills
+                  label="Interests"
+                  showRank
+                  options={INTEREST_ORDER.map((interest) => ({
+                    value: interest,
+                    label: INTEREST_LABELS[interest],
+                  }))}
+                  selected={interests}
+                  onToggle={(value) =>
+                    setInterests((current) => toggle(current, value))
+                  }
+                />
+              </div>
 
-          <div className="mt-10">
-            <h2 className="font-display text-2xl">What do you care about?</h2>
-            <p className="mt-1 text-navy/70">The first two you pick count the most.</p>
-            <div className="mt-4">
-              <PreferencePills
-                label="Interests"
-                showRank
-                options={INTEREST_ORDER.map((i) => ({ value: i, label: INTEREST_LABELS[i] }))}
-                selected={interests}
-                onToggle={(v) => setInterests((l) => toggle(l, v))}
-              />
-            </div>
-          </div>
+              <div className="mt-10">
+                <h3 className="font-display text-2xl">
+                  How should the days feel?
+                </h3>
 
-          <div className="mt-12">
-            <h2 className="font-display text-2xl">How do you want it to feel?</h2>
-            <div role="group" aria-label="Pace" className="mt-4 grid gap-3 sm:grid-cols-3">
-              {(['relaxed', 'balanced', 'packed'] as Pace[]).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  aria-pressed={pace === p}
-                  onClick={() => setPace(p)}
-                  className={`border-2 p-5 text-left transition-colors ${
-                    pace === p ? 'border-navy bg-navy text-sand' : 'border-navy/30 bg-linen hover:border-navy'
-                  }`}
+                <div
+                  role="group"
+                  aria-label="Trip pace"
+                  className="mt-4 grid gap-3"
                 >
-                  <span className="block font-display text-2xl">{PACE_LABELS[p]}</span>
-                  <span className={`mt-1 block text-sm ${pace === p ? 'text-sand/80' : 'text-navy/70'}`}>{PACE_BLURBS[p]}</span>
-                </button>
-              ))}
+                  {(['relaxed', 'balanced', 'packed'] as Pace[]).map(
+                    (option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        aria-pressed={pace === option}
+                        onClick={() => setPace(option)}
+                        className={`border-2 p-4 text-left transition-colors ${
+                          pace === option
+                            ? 'border-navy bg-navy text-sand'
+                            : 'border-navy/25 bg-linen hover:border-navy'
+                        }`}
+                      >
+                        <span className="block font-display text-xl">
+                          {PACE_LABELS[option]}
+                        </span>
+                        <span
+                          className={`mt-1 block text-sm ${
+                            pace === option
+                              ? 'text-sand/70'
+                              : 'text-navy/65'
+                          }`}
+                        >
+                          {PACE_BLURBS[option]}
+                        </span>
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="mt-12">
-            <h2 className="font-display text-2xl">What should Scene avoid?</h2>
+          <div className="mt-12 border-t border-navy/15 pt-10">
+            <h3 className="font-display text-2xl">Anything to avoid?</h3>
+
             <div className="mt-4">
               <PreferencePills
                 label="Things to avoid"
-                options={(Object.keys(AVOID_LABELS) as Avoid[]).map((a) => ({ value: a, label: AVOID_LABELS[a] }))}
+                options={(Object.keys(AVOID_LABELS) as Avoid[]).map((item) => ({
+                  value: item,
+                  label: AVOID_LABELS[item],
+                }))}
                 selected={avoid}
-                onToggle={(v) => setAvoid((l) => toggle(l, v))}
+                onToggle={(value) =>
+                  setAvoid((current) => toggle(current, value))
+                }
               />
             </div>
           </div>
 
-          <div className="mt-12 flex flex-wrap items-center gap-4">
+          <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:items-center">
             <button
               type="button"
-              onClick={() => setStep(0)}
-              className="rounded-full border-2 border-navy px-7 py-3 font-medium transition-colors hover:bg-navy hover:text-sand"
+              disabled={!canBuild}
+              onClick={() => build(applyParsed())}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-navy px-8 py-4 font-bold text-sand transition-colors hover:bg-navy-soft disabled:cursor-not-allowed disabled:opacity-35"
             >
-              Back
+              Build my trip
+              <Sparkles size={17} />
             </button>
-            <button
-              type="button"
-              disabled={interests.length === 0}
-              onClick={() =>
-                build({ destination: destId, days: Math.min(days, maxDays), interests, pace, avoid })
-              }
-              className="rounded-full bg-sun px-8 py-3.5 font-bold text-navy transition-colors hover:bg-[#eaa060] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Build my scene
-            </button>
-            {interests.length === 0 && <span className="text-sm text-navy/65">Pick at least one thing you care about.</span>}
-          </div>
-        </section>
-      )}
 
-      {step === 2 && scene && (
-        <SceneResult scene={scene} onChange={setScene} action={{ label: 'Edit my brief', onClick: () => setStep(0) }} />
-      )}
+            {!canBuild && (
+              <p className="text-sm text-navy/60">
+                Tell Scene at least one thing you want from the trip.
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
