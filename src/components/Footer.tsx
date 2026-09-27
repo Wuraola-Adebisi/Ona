@@ -1,38 +1,98 @@
-import { Link } from 'react-router-dom'
-import { Logo } from './Header'
+import { Menu, X } from 'lucide-react'
+import { useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
 
-export default function Footer() {
+const links = [
+  { to: '/how-it-works', label: 'How it works' },
+  { to: '/examples', label: 'Trips' },
+  { to: '/about', label: 'About' },
+]
+
+export function Logo({ light = false }: { light?: boolean }) {
   return (
-    <footer className="bg-navy text-sand">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
-        <div>
-          <Logo light />
-          <p className="mt-4 max-w-sm text-sand/75">
-            Travel planning should account for how you want to spend your time, not just where you could go.
-          </p>
-        </div>
-        <div>
-          <p className="font-bold">Explore</p>
-          <ul className="mt-3 space-y-2 text-sand/80">
-            <li><Link className="hover:text-sun" to="/plan">Plan a trip</Link></li>
-            <li><Link className="hover:text-sun" to="/how-it-works">How it works</Link></li>
-            <li><Link className="hover:text-sun" to="/examples">Examples</Link></li>
-            <li><Link className="hover:text-sun" to="/about">About</Link></li>
-          </ul>
-        </div>
-        <div>
-          <p className="font-bold">Legal</p>
-          <ul className="mt-3 space-y-2 text-sand/80">
-            <li><Link className="hover:text-sun" to="/privacy">Privacy</Link></li>
-            <li><Link className="hover:text-sun" to="/terms">Terms</Link></li>
-          </ul>
-        </div>
+    <span
+      className={`inline-flex items-center gap-2 font-display text-[1.7rem] leading-none ${
+        light ? 'text-sand' : 'text-navy'
+      }`}
+    >
+      Scene
+      <span aria-hidden className="size-3 rounded-full bg-sun" />
+    </span>
+  )
+}
+
+export default function Header() {
+  const [open, setOpen] = useState(false)
+
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `border-b-2 py-1 text-[0.95rem] font-medium transition-colors ${
+      isActive
+        ? 'border-sun'
+        : 'border-transparent hover:border-navy/40'
+    }`
+
+  return (
+    <header className="sticky top-0 z-30 border-b border-navy/15 bg-sand/95 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
+        <Link
+          to="/"
+          aria-label="Scene home"
+          onClick={() => setOpen(false)}
+        >
+          <Logo />
+        </Link>
+
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
+          {links.map((link) => (
+            <NavLink key={link.to} to={link.to} className={linkClass}>
+              {link.label}
+            </NavLink>
+          ))}
+
+          <Link
+            to="/plan"
+            className="rounded-full bg-navy px-5 py-2.5 text-[0.95rem] font-medium text-sand transition-colors hover:bg-navy-soft"
+          >
+            Plan a trip
+          </Link>
+        </nav>
+
+        <button
+          type="button"
+          className="grid size-10 place-items-center rounded-full border border-navy/30 md:hidden"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          onClick={() => setOpen((current) => !current)}
+        >
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
-      <div className="border-t border-sand/15">
-        <p className="mx-auto max-w-6xl px-5 py-5 text-sm text-sand/60 sm:px-8">
-          Scene is a portfolio demo. Itineraries come from sample data for four cities and are not bookable.
-        </p>
-      </div>
-    </footer>
+
+      {open && (
+        <nav
+          className="flex flex-col gap-1 border-t border-navy/15 px-5 pb-5 pt-3 md:hidden"
+          aria-label="Mobile"
+        >
+          {links.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              onClick={() => setOpen(false)}
+              className="py-2.5 text-lg font-medium"
+            >
+              {link.label}
+            </NavLink>
+          ))}
+
+          <Link
+            to="/plan"
+            onClick={() => setOpen(false)}
+            className="mt-2 rounded-full bg-navy px-5 py-3 text-center font-medium text-sand"
+          >
+            Plan a trip
+          </Link>
+        </nav>
+      )}
+    </header>
   )
 }

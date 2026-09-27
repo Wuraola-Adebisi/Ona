@@ -1,32 +1,43 @@
-# React + TypeScript + Vite
+# Scene
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Scene is a travel-planning product that builds itineraries around how you actually want to travel.
 
-Currently, two official plugins are available:
+Instead of starting with a generic list of attractions, Scene starts with the traveller.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Tell Scene where you are going, how long you have, what you care about, what you want to avoid, and how you want your days to feel. It turns those preferences into a structured itinerary with sensible sequencing, travel time, breathing room, and explanations for why each stop belongs.
 
-## React Compiler
+## The problem
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Travel planning has become very good at discovery.
 
-## Expanding the Oxlint configuration
+There are endless lists of restaurants, attractions, neighbourhoods, museums, beaches, cafés and things to do. The difficult part is deciding what actually belongs in the same trip.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+A traveller has limited time and personal constraints:
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+- They may want architecture more than nightlife.
+- They may prefer slow mornings.
+- They may hate long journeys between stops.
+- They may want to avoid crowded tourist attractions.
+- They may want a full day without feeling rushed.
+- Their energy or the weather may change during the trip.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Scene is built around making those constraints part of the itinerary itself.
+
+## How Scene works
+
+```text
+Trip brief
+    ↓
+Preference interpretation
+    ↓
+Planning constraints
+    ↓
+Activity selection
+    ↓
+Neighbourhood grouping
+    ↓
+Day sequencing
+    ↓
+Reasoning
+    ↓
+Dynamic replanning
