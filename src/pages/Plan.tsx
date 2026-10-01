@@ -2,7 +2,7 @@ import { Minus, Plus, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PreferencePills from "../components/PreferencePills";
-import OnaResult from "../components/OnaResult";
+import SceneResult from "../components/SceneResult";
 import TripCard from "../components/TripCard";
 import { DESTINATIONS, getDestination } from "../data/destinations";
 import {
@@ -11,17 +11,17 @@ import {
   INTEREST_ORDER,
   PACE_BLURBS,
   PACE_LABELS,
-  buildOna,
+  buildScene,
   describeParsed,
   readBrief,
-} from "../engine/onaEngine";
+} from "../engine/sceneEngine";
 import type {
   Avoid,
   Brief,
   DestinationId,
   Interest,
   Pace,
-  Ona,
+  Scene,
 } from "../types";
 
 const PLACEHOLDER =
@@ -48,7 +48,7 @@ export default function Plan() {
   );
   const [pace, setPace] = useState<Pace>(prefill?.pace ?? "relaxed");
   const [avoid, setAvoid] = useState<Avoid[]>(prefill?.avoid ?? []);
-  const [ona, setOna] = useState<Ona | null>(null);
+  const [scene, setScene] = useState<Scene | null>(null);
   const [building, setBuilding] = useState(false);
 
   const timer = useRef<number | undefined>(undefined);
@@ -110,21 +110,21 @@ export default function Plan() {
     setBuilding(true);
 
     timer.current = window.setTimeout(() => {
-      setOna(buildOna(brief));
+      setScene(buildScene(brief));
       setBuilding(false);
     }, 900);
   };
 
   const canBuild = merged().interests.length > 0;
 
-  if (ona) {
+  if (scene) {
     return (
-      <OnaResult
+      <SceneResult
         ona={ona}
         onChange={setOna}
         action={{
           label: "Change my trip",
-          onClick: () => setOna(null),
+          onClick: () => setScene(null),
         }}
       />
     );
