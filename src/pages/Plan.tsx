@@ -82,7 +82,7 @@ export default function Plan() {
       setDays(
         Math.min(
           parsed.days,
-          getDestination(parsed.destination ?? destId).zones.length,
+          getDestination(parsed.destination ?? destId ?? "lisbon").zones.length,
         ),
       );
     }
