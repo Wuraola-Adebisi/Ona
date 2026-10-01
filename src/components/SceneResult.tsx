@@ -1,4 +1,4 @@
-import { ArrowLeft, CloudRain, Moon, Wind } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { INTEREST_LABELS, MOODS, adjustDay, buildScene, resetDay } from '../engine/sceneEngine'
 import type { Adjust, Mood, Scene, ScheduledItem } from '../types'
@@ -29,7 +29,7 @@ const ADJUSTMENTS: {
 export default function SceneResult({ scene, onChange, action }: Props) {
   const [idx, setDayIdx] = useState(0)
   const [open, setOpen] = useState<ScheduledItem | null>(null)
-  const [showMood, setShowMood] = useState(false)
+  const [showMood, setShowMood] = useState(false)\n  const [showAdjustments, setShowAdjustments] = useState(false)
 
   const day = scene.days[idx]
 
@@ -92,7 +92,7 @@ export default function SceneResult({ scene, onChange, action }: Props) {
               Here is the plan.
             </h2>
             <p className="mt-3 text-navy/65">
-              Each day keeps nearby places together. Tap a stop if you want to know why it is there.
+              Each day keeps nearby places together. Tap a stop for more detail.
             </p>
           </div>
 
@@ -139,76 +139,67 @@ export default function SceneResult({ scene, onChange, action }: Props) {
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-navy/45">
                 Route for the day
               </p>
-              <RouteDiagram items={day.items} activeId={open?.activity.id ?? null} title={day.zone.title} />
+              <RouteDiagram items={day.items} activeId={open?.activity.id ?? null} title={day.zone.title} onOpen={setOpen} />
             </aside>
           </div>
         </section>
 
-        <section className="mt-16 border-t border-navy/15 pt-8">
+        <section className="mt-14 border-t border-navy/15 pt-8">
           <button
             type="button"
-            onClick={() => setShowMood((current) => !current)}
+            onClick={() => setShowAdjustments((current) => !current)}
             className="text-sm font-bold underline decoration-sun decoration-2 underline-offset-4"
-            aria-expanded={showMood}
+            aria-expanded={showAdjustments}
           >
-            {showMood ? 'Hide trip preferences' : 'Want to change the feel of the trip?'}
+            {showAdjustments ? 'Hide trip options' : 'Fine-tune the trip'}
           </button>
 
-          {showMood && (
-            <div className="mt-5 max-w-3xl">
-              <p className="text-sm text-navy/60">
-                This keeps your destination and interests, but changes the rhythm of the days.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2.5">
-                {MOODS.map((mood) => (
-                  <button
-                    key={mood.id}
-                    type="button"
-                    aria-pressed={scene.mood === mood.id}
-                    onClick={() => changeMood(mood.id)}
-                    className={
-                      'rounded-full border-2 px-5 py-2.5 font-medium transition-colors ' +
-                      (scene.mood === mood.id
-                        ? 'border-navy bg-navy text-sand'
-                        : 'border-navy/25 bg-linen hover:border-navy')
-                    }
-                  >
-                    {mood.label}
+          {showAdjustments && (
+            <div className="mt-6 grid gap-8 lg:grid-cols-2">
+              <div>
+                <p className="font-display text-2xl">Change the feel</p>
+                <p className="mt-2 text-sm text-navy/60">
+                  Keep the same destination and interests, but make the days slower, fuller or more focused.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  {MOODS.map((mood) => (
+                    <button
+                      key={mood.id}
+                      type="button"
+                      aria-pressed={scene.mood === mood.id}
+                      onClick={() => changeMood(mood.id)}
+                      className={
+                        'rounded-full border-2 px-5 py-2.5 font-medium transition-colors ' +
+                        (scene.mood === mood.id
+                          ? 'border-navy bg-navy text-sand'
+                          : 'border-navy/25 bg-linen hover:border-navy')
+                      }
+                    >
+                      {mood.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="font-display text-2xl">Change this day</p>
+                <p className="mt-2 text-sm text-navy/60">
+                  Make the selected day easier, weather-friendly or quieter in the evening.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  <button type="button" onClick={() => adjust('slower')} className="rounded-full border-2 border-navy/20 px-4 py-2 text-sm font-medium hover:border-navy">
+                    Make it easier
                   </button>
-                ))}
+                  <button type="button" onClick={() => adjust('rain')} className="rounded-full border-2 border-navy/20 px-4 py-2 text-sm font-medium hover:border-navy">
+                    If it rains
+                  </button>
+                  <button type="button" onClick={() => adjust('tired')} className="rounded-full border-2 border-navy/20 px-4 py-2 text-sm font-medium hover:border-navy">
+                    Quieter evening
+                  </button>
+                </div>
               </div>
             </div>
           )}
-        </section>
-
-        <section className="mt-14 border-t-2 border-navy pt-10">
-          <div className="max-w-2xl">
-            <p className="text-sm font-bold uppercase tracking-[0.14em] text-sun-deep">
-              Need to change something?
-            </p>
-            <h2 className="mt-2 font-display text-3xl sm:text-4xl">
-              Adjust just this day.
-            </h2>
-          </div>
-
-          <div className="mt-6 grid gap-3 md:grid-cols-3">
-            {ADJUSTMENTS.map(({ kind, label, body, Icon }) => (
-              <button
-                key={kind}
-                type="button"
-                onClick={() => adjust(kind)}
-                className="group flex items-start gap-4 border-2 border-navy/20 bg-linen p-5 text-left transition-colors hover:border-navy hover:bg-navy hover:text-sand"
-              >
-                <Icon size={20} className="mt-0.5 shrink-0 text-sun-deep group-hover:text-sun" />
-                <span>
-                  <strong className="block font-display text-xl">{label}</strong>
-                  <span className="mt-1 block text-sm text-navy/65 group-hover:text-sand/70">
-                    {body}
-                  </span>
-                </span>
-              </button>
-            ))}
-          </div>
         </section>
 
         <div className="mt-14 border-t border-navy/15 pt-7">
