@@ -114,7 +114,7 @@ export default function RouteDiagram({
         </dl>
 
         <p className="mt-5 text-xs text-navy/55">
-          Select a stop to see why Scene chose it.
+          Select a stop to see why Ona chose it.
         </p>
       </div>
     </div>
