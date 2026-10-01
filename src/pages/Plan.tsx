@@ -61,6 +61,12 @@ export default function Plan() {
       setDays((current) =>
         Math.min(current, getDestination(parsed.destination!).zones.length),
       )
+    } else if (parsed.unknownPlace) {
+      const option = createDestinationOption(parsed.unknownPlace)
+      if (option) {
+        setDestId(option.id)
+        setDays((current) => Math.min(current, getDestination(option.id).zones.length))
+      }
     }
     if (parsed.days) {
       const selected = parsed.destination ?? destId
