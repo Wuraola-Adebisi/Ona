@@ -120,7 +120,7 @@ export default function Plan() {
   if (scene) {
     return (
       <SceneResult
-        ona={ona}
+        scene={scene}
         onChange={setScene}
         action={{
           label: "Change my trip",
