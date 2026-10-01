@@ -57,8 +57,8 @@ export default function Plan() {
 
   const parsed = useMemo(() => readBrief(text), [text]);
   const chips = describeParsed(parsed);
-  const destination = getDestination(destId);
-  const maxDays = destination.zones.length;
+  const destination = destId ? getDestination(destId) : null;
+  const maxDays = destination?.zones.length ?? 7;
   const destinationResults = useMemo(
     () => searchDestinations(destinationQuery).slice(0, 8),
     [destinationQuery],
