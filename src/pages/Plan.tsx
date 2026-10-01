@@ -69,13 +69,18 @@ export default function Plan() {
   }, []);
 
   useEffect(() => {
-    if (!parsed.destination) return;
+    if (parsed.destination) {
+      setDestId(parsed.destination);
+      setDays((current) =>
+        Math.min(current, getDestination(parsed.destination!).zones.length),
+      );
+      return;
+    }
 
-    setDestId(parsed.destination);
-    setDays((current) =>
-      Math.min(current, getDestination(parsed.destination!).zones.length),
-    );
-  }, [parsed.destination]);
+    if (parsed.unknownPlace) {
+      setDestId(null);
+    }
+  }, [parsed.destination, parsed.unknownPlace]);
 
   useEffect(() => {
     if (parsed.days) {
