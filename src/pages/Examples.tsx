@@ -1,21 +1,21 @@
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import OnaResult from "../components/OnaResult";
+import SceneResult from "../components/SceneResult";
 import TripCard from "../components/TripCard";
 import { getDestination } from "../data/destinations";
 import { EXAMPLES, type Example } from "../data/examples";
-import { PACE_LABELS, buildOna } from "../engine/sceneEngine";
-import type { DestinationId, Ona } from "../types";
+import { PACE_LABELS, buildScene } from "../engine/sceneEngine";
+import type { DestinationId, Scene } from "../types";
 
 function ExampleTrip({ example }: { example: Example }) {
   const navigate = useNavigate();
-  const [scene, setOna] = useState<Ona>(() => buildOna(example.brief));
+  const [scene, setScene] = useState<Scene>(() => buildScene(example.brief));
 
   return (
-    <OnaResult
+    <SceneResult
       scene={scene}
-      onChange={setOna}
+      onChange={setScene}
       action={{
         label: "Build my own trip",
         onClick: () =>
@@ -38,22 +38,16 @@ export default function Examples() {
         <p className="text-sm font-bold uppercase tracking-[0.18em] text-sun-deep">
           Start with an example
         </p>
-
         <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[0.92] sm:text-7xl">
           See how different travellers can use Ona.
         </h1>
-
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy/70">
           These are starting points, not fixed itineraries. Open one to see how
           a particular set of preferences shapes the days, then change the mood
           or build your own trip.
         </p>
 
-        <div
-          role="group"
-          aria-label="Trip examples"
-          className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4"
-        >
+        <div role="group" aria-label="Trip examples" className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
           {EXAMPLES.map((example) => (
             <button
               key={example.id}
@@ -66,9 +60,7 @@ export default function Examples() {
                 compact
                 selected={current.id === example.id}
                 destination={getDestination(example.id)}
-                meta={`${example.brief.days} days · ${PACE_LABELS[
-                  example.brief.pace
-                ].toLowerCase()}`}
+                meta={example.brief.days + " days · " + PACE_LABELS[example.brief.pace].toLowerCase()}
               />
             </button>
           ))}
@@ -98,7 +90,6 @@ export default function Examples() {
               Start with your own brief.
             </h2>
           </div>
-
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
