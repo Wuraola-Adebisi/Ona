@@ -121,7 +121,7 @@ export default function Plan() {
     return (
       <SceneResult
         ona={ona}
-        onChange={setOna}
+        onChange={setScene}
         action={{
           label: "Change my trip",
           onClick: () => setScene(null),
