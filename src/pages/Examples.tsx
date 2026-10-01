@@ -10,12 +10,12 @@ import type { DestinationId, Scene } from "../types";
 
 function ExampleTrip({ example }: { example: Example }) {
   const navigate = useNavigate();
-  const [scene, setOna] = useState<Scene>(() => buildScene(example.brief));
+  const [scene, setScene] = useState<Scene>(() => buildScene(example.brief));
 
   return (
     <SceneResult
       scene={scene}
-      onChange={setOna}
+      onChange={setScene}
       action={{
         label: "Build my own trip",
         onClick: () =>
