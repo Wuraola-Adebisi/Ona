@@ -543,7 +543,7 @@ export function adjustDay(scene: Scene, dayIndex: number, kind: Adjust): Scene {
       picks = day.picks.filter((p) => p !== drop)
       notice = `Removed ${drop.activity.name}, added breathing room between stops and moved the start 30 minutes later.`
     } else {
-      notice = 'This day already has only two main stops, so Scene added more time between them and a later start.'
+      notice = 'This day already has only two main stops, so Ona added more time between them and a later start.'
     }
     return replaceDay(scene, {
       ...day,
