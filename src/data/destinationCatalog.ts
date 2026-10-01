@@ -10,18 +10,25 @@ export interface DestinationCatalogItem {
   aliases: string[]
 }
 
+const ALIASES: Record<DestinationId, string[]> = {
+  lisbon: ['Lisbon', 'Lisboa'],
+  tokyo: ['Tokyo', 'Tōkyō'],
+  'new-york': ['New York', 'New York City', 'NYC'],
+  'cape-town': ['Cape Town', 'Cape Town City'],
+}
+
 export const DESTINATION_CATALOG: DestinationCatalogItem[] = DESTINATIONS.map((destination) => ({
   id: destination.id,
   name: destination.name,
   country: destination.country,
   tagline: destination.tagline,
   featured: true,
-  aliases: [destination.name],
+  aliases: ALIASES[destination.id] ?? [destination.name],
 }))
 
-export const FEATURED_DESTINATION_IDS: DestinationId[] = DESTINATIONS.map(
-  (destination) => destination.id,
-)
+export const FEATURED_DESTINATION_IDS: DestinationId[] = DESTINATION_CATALOG
+  .filter((destination) => destination.featured)
+  .map((destination) => destination.id)
 
 export function findDestinationInText(text: string): DestinationId | undefined {
   const normalized = text.toLowerCase()
