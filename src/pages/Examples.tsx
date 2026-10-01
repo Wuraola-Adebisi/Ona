@@ -1,21 +1,21 @@
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import SceneResult from "../components/SceneResult";
+import OnaResult from "../components/OnaResult";
 import TripCard from "../components/TripCard";
 import { getDestination } from "../data/destinations";
 import { EXAMPLES, type Example } from "../data/examples";
-import { PACE_LABELS, buildScene } from "../engine/sceneEngine";
-import type { DestinationId, Scene } from "../types";
+import { PACE_LABELS, buildOna } from "../engine/sceneEngine";
+import type { DestinationId, Ona } from "../types";
 
 function ExampleTrip({ example }: { example: Example }) {
   const navigate = useNavigate();
-  const [scene, setScene] = useState<Scene>(() => buildScene(example.brief));
+  const [scene, setOna] = useState<Ona>(() => buildOna(example.brief));
 
   return (
-    <SceneResult
+    <OnaResult
       scene={scene}
-      onChange={setScene}
+      onChange={setOna}
       action={{
         label: "Build my own trip",
         onClick: () =>
