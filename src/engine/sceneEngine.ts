@@ -1,4 +1,5 @@
 import { DESTINATIONS, getDestination } from '../data/destinations'
+import { findDestinationInText } from '../data/destinationCatalog'
 import type {
   Activity,
   Adjust,
@@ -219,13 +220,6 @@ const INTEREST_PATTERNS: [Interest, RegExp][] = [
   ['shopping', /\bshop|vintage|\bmarkets?\b|boutique/i],
 ]
 
-const DEST_PATTERNS: [DestinationId, RegExp][] = [
-  ['lisbon', /lisbon|lisboa/i],
-  ['tokyo', /tokyo/i],
-  ['new-york', /new york|\bnyc\b/i],
-  ['cape-town', /cape town/i],
-]
-
 const PLACE_RE =
   /(?:[Gg]oing to|[Tt]rip to|[Tt]ravell?ing to|[Vv]isiting|[Hh]eading to|[Oo]ff to|[Ff]lying to|[Ff]ly to)\s+([A-Z][\p{L}'-]+(?:\s[A-Z][\p{L}'-]+)*)/u
 
@@ -234,12 +228,7 @@ export function readBrief(text: string): Parsed {
   const t = text.trim()
   if (!t) return out
 
-  for (const [id, re] of DEST_PATTERNS) {
-    if (re.test(t)) {
-      out.destination = id
-      break
-    }
-  }
+  out.destination = findDestinationInText(t)
   if (!out.destination) {
     const m = PLACE_RE.exec(t)
     if (m) out.unknownPlace = m[1]
