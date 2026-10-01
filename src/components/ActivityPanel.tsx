@@ -6,7 +6,7 @@ import {
   energyLabel,
   formatDuration,
   travelText,
-} from '../engine/onaEngine'
+} from '../engine/sceneEngine'
 import type { ScheduledItem } from '../types'
 
 interface Props {
