@@ -1,4 +1,4 @@
-import { DESTINATIONS } from './destinations'
+import { DESTINATIONS, createDestination } from './destinations'
 import type { DestinationId } from '../types'
 
 export interface DestinationCatalogItem {
@@ -49,4 +49,27 @@ export function searchDestinations(query: string): DestinationCatalogItem[] {
       .toLowerCase()
       .includes(normalized),
   )
+}
+
+
+export function createDestinationOption(query: string): DestinationCatalogItem | undefined {
+  const name = query.trim().replace(/\s+/g, ' ')
+  if (!name || name.length < 2) return undefined
+
+  const existing = DESTINATION_CATALOG.some((destination) =>
+    [destination.name, ...destination.aliases].some(
+      (value) => value.toLowerCase() === name.toLowerCase(),
+    ),
+  )
+  if (existing) return undefined
+
+  const destination = createDestination(name)
+  return {
+    id: destination.id,
+    name: destination.name,
+    country: '',
+    tagline: destination.tagline,
+    featured: false,
+    aliases: [destination.name],
+  }
 }
