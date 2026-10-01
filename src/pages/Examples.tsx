@@ -1,21 +1,21 @@
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import SceneResult from "../components/SceneResult";
+import OnaResult from "../components/OnaResult";
 import TripCard from "../components/TripCard";
 import { getDestination } from "../data/destinations";
 import { EXAMPLES, type Example } from "../data/examples";
-import { PACE_LABELS, buildScene } from "../engine/sceneEngine";
-import type { DestinationId, Scene } from "../types";
+import { PACE_LABELS, buildOna } from "../engine/onaEngine";
+import type { DestinationId, Ona } from "../types";
 
 function ExampleTrip({ example }: { example: Example }) {
   const navigate = useNavigate();
-  const [scene, setScene] = useState<Scene>(() => buildScene(example.brief));
+  const [ona, setOna] = useState<Ona>(() => buildOna(example.brief));
 
   return (
-    <SceneResult
-      scene={scene}
-      onChange={setScene}
+    <OnaResult
+      ona={ona}
+      onChange={setOna}
       action={{
         label: "Build my own trip",
         onClick: () =>
@@ -36,11 +36,11 @@ export default function Examples() {
     <div>
       <section className="mx-auto max-w-6xl px-5 pb-14 pt-12 sm:px-8 sm:pt-16">
         <p className="text-sm font-bold uppercase tracking-[0.18em] text-sun-deep">
-          Find your starting point
+          Start with an example
         </p>
 
         <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[0.92] sm:text-7xl">
-          See how different travellers can use Scene.
+          See how different travellers can use Ona.
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy/70">
@@ -92,7 +92,7 @@ export default function Examples() {
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-14 sm:px-8 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-navy/55">
-              Your trip will be different
+              Your trip will be different.
             </p>
             <h2 className="mt-2 font-display text-3xl sm:text-4xl">
               Start with your own brief.
