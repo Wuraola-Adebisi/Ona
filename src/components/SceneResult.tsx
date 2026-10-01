@@ -15,17 +15,6 @@ interface Props {
 
 const two = (number: number) => String(number).padStart(2, '0')
 
-const ADJUSTMENTS: {
-  kind: Adjust
-  label: string
-  body: string
-  Icon: typeof Wind
-}[] = [
-  { kind: 'slower', label: 'Make this day easier', body: 'Fewer stops and more time between them.', Icon: Wind },
-  { kind: 'rain', label: 'If it rains', body: 'Swap outdoor stops for nearby indoor ones.', Icon: CloudRain },
-  { kind: 'tired', label: 'A quieter evening', body: 'Finish earlier and leave the night open.', Icon: Moon },
-]
-
 export default function SceneResult({ scene, onChange, action }: Props) {
   const [idx, setDayIdx] = useState(0)
   const [open, setOpen] = useState<ScheduledItem | null>(null)
