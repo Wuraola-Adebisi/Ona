@@ -31,11 +31,6 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-sun" to="/how-it-works">
-                How Ona works
-              </Link>
-            </li>
-            <li>
               <Link className="hover:text-sun" to="/examples">
                 Example trips
               </Link>
