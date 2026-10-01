@@ -103,7 +103,22 @@ const capeTown = (p: Palette): ReactNode => (
   </>
 )
 
-const ART: Record<Destination['id'], (p: Palette) => ReactNode> = {
+const generic = (p: Palette): ReactNode => (
+  <>
+    <path d="M0 365 Q90 285 180 345 T400 320 V500 H0Z" fill={p.far} />
+    <path d="M0 420 Q95 355 205 410 T400 390 V500 H0Z" fill={p.mid} />
+    <g fill={p.near} opacity=".92">
+      <rect x="38" y="320" width="48" height="180" />
+      <rect x="104" y="350" width="62" height="150" />
+      <rect x="185" y="300" width="54" height="200" />
+      <rect x="258" y="340" width="70" height="160" />
+      <rect x="346" y="315" width="38" height="185" />
+    </g>
+    <path d="M0 450 Q80 430 160 450 T320 448 T400 450 V500 H0Z" fill={p.accent} opacity=".16" />
+  </>
+)
+
+const ART: Partial<Record<Destination['id'], (p: Palette) => ReactNode>> = {
   lisbon,
   tokyo,
   'new-york': newYork,
@@ -122,7 +137,7 @@ export default function DestinationArt({ destination, className = '' }: { destin
     >
       <rect width="400" height="500" fill={p.sky} />
       <circle cx="268" cy="176" r="74" fill={p.sun} />
-      {ART[destination.id](p)}
+      {ART[destination.id]?.(p) ?? generic(p)}
     </svg>
   )
 }
