@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import SceneResult from '../components/SceneResult'
 import { getDestination } from '../data/destinations'
-import { searchDestinations } from '../data/destinationCatalog'
+import { createDestinationOption, searchDestinations } from '../data/destinationCatalog'
 import {
   AVOID_LABELS,
   INTEREST_LABELS,
@@ -45,6 +45,11 @@ export default function Plan() {
 
   const destinationResults = useMemo(
     () => searchDestinations(destinationQuery).slice(0, 6),
+    [destinationQuery],
+  )
+
+  const typedDestination = useMemo(
+    () => createDestinationOption(destinationQuery),
     [destinationQuery],
   )
 
@@ -160,7 +165,7 @@ export default function Plan() {
               />
             </div>
 
-            {(destinationQuery || !destination) && destinationResults.length > 0 && (
+            {(destinationQuery || !destination) && (destinationResults.length > 0 || typedDestination) && (
               <div className="mt-2 border-2 border-navy bg-linen">
                 {destinationResults.map((item) => (
                   <button
@@ -176,13 +181,22 @@ export default function Plan() {
                     <span className="text-sm text-navy/45">Choose</span>
                   </button>
                 ))}
+                {typedDestination && (
+                  <button
+                    type="button"
+                    onClick={() => selectDestination(typedDestination.id)}
+                    className="w-full border-t border-navy/15 bg-sand px-4 py-3 text-left hover:bg-sand-deep"
+                  >
+                    <span className="block font-medium">Plan a trip to {typedDestination.name}</span>
+                    <span className="mt-1 block text-sm text-navy/55">Start with a flexible plan and refine the places later.</span>
+                  </button>
+                )}
               </div>
             )}
 
             {parsed.unknownPlace && !destId && (
               <p className="mt-3 border-l-4 border-sun bg-sun/15 px-4 py-3 text-sm">
-                We do not have {parsed.unknownPlace} in the trip library yet.
-                Choose another destination for now.
+                We can start with {parsed.unknownPlace}. The plan will use a flexible city framework until Ona has richer local place data.
               </p>
             )}
           </div>
