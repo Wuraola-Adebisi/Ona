@@ -24,12 +24,12 @@ export const FEATURED_DESTINATION_IDS: DestinationId[] = DESTINATIONS.map(
 )
 
 const escapeRegExp = (value: string) =>
-  value.replace(/[.*+?^$\\{}()|[\\]\\\\]/g, '\\export function searchDestinations(query: string): DestinationCatalogItem[] {')
+  value.replace(/[.*+?^$\\{}()|[\\]\\\\]/g, '\\$&')
 
 export function findDestinationInText(text: string): DestinationId | undefined {
   return DESTINATION_CATALOG.find((destination) =>
     destination.aliases.some((alias) => {
-      const pattern = new RegExp(\`\\\\b\${escapeRegExp(alias)}\\\\b\`, 'i')
+      const pattern = new RegExp('\\\\b' + escapeRegExp(alias) + '\\\\b', 'i')
       return pattern.test(text)
     }),
   )?.id
