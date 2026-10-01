@@ -6,7 +6,7 @@ import {
   energyLabel,
   formatDuration,
   travelText,
-} from '../engine/sceneEngine'
+} from '../engine/onaEngine'
 import type { ScheduledItem } from '../types'
 
 interface Props {
@@ -103,11 +103,11 @@ export default function ActivityPanel({ item, onClose }: Props) {
 
               <section className="mt-9 rounded-tl-3xl rounded-br-3xl bg-mist/70 p-5 sm:p-6">
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-sun-deep">
-                  The reasoning
+                  Why this fits
                 </p>
 
                 <h3 className="mt-1 font-display text-2xl">
-                  Why Scene chose this
+                  Why this fits
                 </h3>
 
                 <p className="mt-3 leading-relaxed">
