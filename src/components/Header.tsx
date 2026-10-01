@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 const links = [
-  { to: '/examples', label: 'Example trips' },
-  { to: '/about', label: 'About Ona' },
+  { to: '/examples', label: 'Explore' },
+  { to: '/how-it-works', label: 'How it works' },
 ]
 
 export function Logo({ light = false }: { light?: boolean }) {
@@ -46,7 +46,7 @@ export default function Header() {
             to="/plan"
             className="rounded-full bg-navy px-5 py-2.5 text-[0.95rem] font-medium text-sand transition-colors hover:bg-navy-soft"
           >
-            Build a trip
+            Plan a trip
           </Link>
         </nav>
 
@@ -82,7 +82,7 @@ export default function Header() {
             onClick={() => setOpen(false)}
             className="mt-2 rounded-full bg-navy px-5 py-3 text-center font-medium text-sand"
           >
-            Build a trip
+            Plan a trip
           </Link>
         </nav>
       )}

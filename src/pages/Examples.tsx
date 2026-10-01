@@ -36,10 +36,10 @@ export default function Examples() {
     <div>
       <section className="mx-auto max-w-6xl px-5 pb-14 pt-12 sm:px-8 sm:pt-16">
         <p className="text-sm font-bold uppercase tracking-[0.18em] text-sun-deep">
-          Start with an example
+          Explore trips
         </p>
         <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[0.92] sm:text-7xl">
-          See how different travellers can use Ona.
+          See a few ways a trip can come together with Ona.
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy/70">
           These are starting points, not fixed itineraries. Open one to see how
@@ -47,7 +47,7 @@ export default function Examples() {
           or build your own trip.
         </p>
 
-        <div role="group" aria-label="Trip examples" className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div role="group" aria-label="Trips" className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
           {EXAMPLES.map((example) => (
             <button
               key={example.id}
@@ -69,7 +69,7 @@ export default function Examples() {
         <div className="mt-8 flex items-start gap-4 border-l-4 border-sun bg-linen px-5 py-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-navy/50">
-              Traveller brief
+              The trip
             </p>
             <p className="mt-2 max-w-2xl text-lg leading-relaxed">
               {current.said}
@@ -84,10 +84,10 @@ export default function Examples() {
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-14 sm:px-8 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-navy/55">
-              Your trip will be different.
+              Make it yours.
             </p>
             <h2 className="mt-2 font-display text-3xl sm:text-4xl">
-              Start with your own brief.
+              Plan your own trip.
             </h2>
           </div>
           <button
@@ -95,7 +95,7 @@ export default function Examples() {
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="inline-flex items-center gap-2 font-bold underline decoration-navy decoration-2 underline-offset-8"
           >
-            Choose another trip
+            Choose a different trip
             <ArrowRight size={16} />
           </button>
         </div>

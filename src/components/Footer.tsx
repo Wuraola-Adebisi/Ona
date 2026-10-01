@@ -17,7 +17,7 @@ export default function Footer() {
             to="/plan"
             className="mt-7 inline-block rounded-full bg-sun px-6 py-3 font-bold text-navy transition-colors hover:bg-[#eaa060]"
           >
-            Build a trip
+            Plan a trip
           </Link>
         </div>
 
@@ -32,7 +32,7 @@ export default function Footer() {
             </li>
             <li>
               <Link className="hover:text-sun" to="/examples">
-                Example trips
+                Explore trips
               </Link>
             </li>
             <li>
