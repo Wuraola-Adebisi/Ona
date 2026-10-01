@@ -188,7 +188,7 @@ export default function Plan() {
                     className="w-full border-t border-navy/15 bg-sand px-4 py-3 text-left hover:bg-sand-deep"
                   >
                     <span className="block font-medium">Plan a trip to {typedDestination.name}</span>
-                    <span className="mt-1 block text-sm text-navy/55">Start with a flexible plan and refine the places later.</span>
+                    <span className="mt-1 block text-sm text-navy/55">Start with a simple plan and refine the places later.</span>
                   </button>
                 )}
               </div>
@@ -196,7 +196,7 @@ export default function Plan() {
 
             {parsed.unknownPlace && !destId && (
               <p className="mt-3 border-l-4 border-sun bg-sun/15 px-4 py-3 text-sm">
-                We can start with {parsed.unknownPlace}. The plan will use a flexible city framework until Ona has richer local place data.
+                We can start with {parsed.unknownPlace}. The plan will start with broad city ideas until Ona has richer local place data.
               </p>
             )}
           </div>
