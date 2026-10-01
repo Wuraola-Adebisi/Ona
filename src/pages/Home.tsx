@@ -32,7 +32,7 @@ export default function Home() {
                 Plan a trip <ArrowRight size={18} />
               </Link>
               <Link to="/examples" className="font-bold underline decoration-sun decoration-2 underline-offset-8">
-                See examples
+                Explore trips
               </Link>
             </div>
           </div>
@@ -118,11 +118,11 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
           <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sun-deep">Example trips</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sun-deep">Explore trips</p>
               <h2 className="mt-3 font-display text-5xl leading-none">Four ways to use Ona.</h2>
               <p className="mt-4 max-w-xl text-navy/65">These are examples, not the limits of where you can go. The destination library is data, not the product.</p>
             </div>
-            <Link to="/examples" className="font-bold underline decoration-sun decoration-2 underline-offset-8">Explore examples</Link>
+            <Link to="/examples" className="font-bold underline decoration-sun decoration-2 underline-offset-8">Explore trips</Link>
           </div>
           <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
             {EXAMPLES.map((example) => (
