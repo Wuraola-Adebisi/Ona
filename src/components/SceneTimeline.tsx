@@ -1,6 +1,6 @@
 import { CloudRain, Clock, Moon, Undo2 } from 'lucide-react'
 import { Fragment } from 'react'
-import { travelText } from '../engine/onaEngine'
+import { travelText } from '../engine/sceneEngine'
 import type { Adjust, Day, ScheduledItem } from '../types'
 import ActivityCard from './ActivityCard'
 
@@ -20,7 +20,7 @@ const ADJUSTMENTS: { kind: Adjust; ask: string; action: string; Icon: typeof Clo
 
 const grid = 'grid grid-cols-[3.75rem_1fr] gap-x-3 sm:grid-cols-[4.5rem_1fr] sm:gap-x-5'
 
-export default function OnaTimeline({ day, activeId, onOpen, onAdjust, onReset }: Props) {
+export default function SceneTimeline({ day, activeId, onOpen, onAdjust, onReset }: Props) {
   return (
     <div>
       <div className="mb-6">
