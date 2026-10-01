@@ -17,7 +17,7 @@ export default function Footer() {
             to="/plan"
             className="mt-7 inline-block rounded-full bg-sun px-6 py-3 font-bold text-navy transition-colors hover:bg-[#eaa060]"
           >
-            Plan a trip
+            Build a trip
           </Link>
         </div>
 
@@ -27,22 +27,22 @@ export default function Footer() {
           <ul className="mt-4 space-y-3 text-sand/70">
             <li>
               <Link className="hover:text-sun" to="/plan">
-                Plan a trip
+                Build a trip
               </Link>
             </li>
             <li>
               <Link className="hover:text-sun" to="/how-it-works">
-                How it works
+                How Ona works
               </Link>
             </li>
             <li>
               <Link className="hover:text-sun" to="/examples">
-                Examples
+                Example trips
               </Link>
             </li>
             <li>
               <Link className="hover:text-sun" to="/about">
-                About
+                About Ona
               </Link>
             </li>
           </ul>
