@@ -15,7 +15,7 @@ export function Logo({ light = false }: { light?: boolean }) {
         light ? 'text-sand' : 'text-navy'
       }`}
     >
-      Scene
+      Ona
       <span aria-hidden className="size-3 rounded-full bg-sun" />
     </span>
   )
@@ -36,7 +36,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
         <Link
           to="/"
-          aria-label="Scene home"
+          aria-label="Ona home"
           onClick={() => setOpen(false)}
         >
           <Logo />
