@@ -310,5 +310,88 @@ const capeTown: Destination = {
 
 export const DESTINATIONS: Destination[] = [lisbon, tokyo, newYork, capeTown]
 
-export const getDestination = (id: DestinationId): Destination =>
-  DESTINATIONS.find((d) => d.id === id) ?? lisbon
+const GENERIC_PALETTES: Palette[] = [
+  { sky: '#d9e2df', sun: '#e59a5a', far: '#8da6a0', mid: '#4d6b68', near: '#183b3b', accent: '#f7f0df' },
+  { sky: '#dce2ed', sun: '#d47b5c', far: '#8c9db8', mid: '#4b6284', near: '#1b2942', accent: '#faf1df' },
+  { sky: '#eadfcf', sun: '#d98d4b', far: '#9a9a83', mid: '#5c6550', near: '#29352b', accent: '#fbf5e8' },
+]
+
+const genericPalette = (name: string): Palette => {
+  const hash = name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0)
+  return GENERIC_PALETTES[hash % GENERIC_PALETTES.length]
+}
+
+/**
+ * Planning scaffold for destinations without curated venue data.
+ * It uses planning actions rather than inventing real places. This layer can
+ * later be replaced by location/AI data without changing the itinerary engine.
+ */
+export const createDestination = (name: string): Destination => {
+  const cleanName = name.trim().replace(/\\s+/g, ' ')
+  const id = slug(cleanName)
+  const make = (zone: string) => maker(zone)
+
+  return {
+    id,
+    name: cleanName,
+    country: '',
+    tagline: 'A flexible starting point for planning your days.',
+    palette: genericPalette(cleanName),
+    zones: [
+      { id: 'centre', title: 'The centre', blurb: 'Start with the main streets, landmarks and neighbourhoods closest to the heart of the city.', iconic: true },
+      { id: 'culture', title: 'Culture and character', blurb: 'Leave room for museums, galleries, historic places and the parts of the city with a story.' },
+      { id: 'food', title: 'Food and local life', blurb: 'Build around markets, cafés, local restaurants and the neighbourhoods where people actually spend time.', optional: ['food', 'cafes', 'shopping'] },
+      { id: 'outdoors', title: 'Outdoors and views', blurb: 'A flexible day for parks, walks, waterfronts, viewpoints or another way to get outside.', optional: ['nature', 'views', 'beach'] },
+      { id: 'neighbourhoods', title: 'Neighbourhoods', blurb: 'A slower day for wandering, shopping, cafés and seeing how the city changes from one area to another.' },
+    ],
+    activities: [
+      make('centre')('coffee', 'Start with a café near where you are staying', 'Nearby', 45, ['cafes'], 'A practical first stop. Choose somewhere close rather than crossing the city first.'),
+      make('centre')('morning', 'Explore the central district', 'City centre', 120, ['architecture', 'history', 'views'], 'A flexible walking block for the places that make the city feel like itself.', { tourist: 1, energy: 2 }),
+      make('centre')('lunch', 'Find a local lunch spot', 'City centre', 75, ['food'], 'Keep lunch close to the morning route and choose a place that fits your preferences.', { tourist: 1 }),
+      make('centre')('afternoon', 'See one major landmark or museum', 'City centre', 120, ['architecture', 'history', 'galleries'], 'Pick one substantial stop rather than trying to cover every attraction.', { indoor: true, energy: 1 }),
+      make('centre')('sunset', 'Find a good viewpoint nearby', 'City centre', 60, ['views'], 'Use the end of the day for a viewpoint, waterfront or another good place to pause.', { tourist: 1, energy: 1 }),
+      make('centre')('dinner', 'Dinner in the neighbourhood', 'City centre', 90, ['food'], 'Choose somewhere nearby so dinner does not turn into another commute.', { tourist: 1 }),
+
+      make('culture')('coffee', 'Coffee before the day starts', 'Culture district', 40, ['cafes'], 'An easy start near the first cultural stop.'),
+      make('culture')('morning', 'Visit a museum, gallery or historic site', 'Culture district', 120, ['galleries', 'history', 'architecture'], 'Choose the cultural stop that best matches what you want to learn or see.', { indoor: true, energy: 1 }),
+      make('culture')('lunch', 'Lunch nearby', 'Culture district', 75, ['food'], 'Stay in the area for lunch rather than doubling back.', { tourist: 1 }),
+      make('culture')('afternoon', 'Explore the surrounding neighbourhood', 'Culture district', 100, ['architecture', 'shopping', 'history'], 'Walk beyond the headline attraction and see what is around it.', { tourist: 0, energy: 1 }),
+      make('culture')('afternoon2', 'A second cultural stop', 'Culture district', 90, ['galleries', 'history'], 'Optional if you still have the energy for another focused stop.', { indoor: true, energy: 1 }),
+      make('culture')('dinner', 'Dinner somewhere local', 'Culture district', 90, ['food'], 'Keep the evening close to where the day finishes.', { tourist: 1 }),
+
+      make('food')('coffee', 'Start at a local café or bakery', 'Food neighbourhood', 45, ['cafes', 'food'], 'Give the morning a food-first start.'),
+      make('food')('morning', 'Explore a market or food neighbourhood', 'Food neighbourhood', 100, ['food', 'shopping'], 'Browse local food, shops and everyday street life.', { tourist: 1, energy: 1 }),
+      make('food')('lunch', 'Make lunch the main event', 'Food neighbourhood', 90, ['food'], 'Leave enough time to actually enjoy the meal rather than fitting it between attractions.', { tourist: 1 }),
+      make('food')('afternoon', 'Wander the surrounding neighbourhoods', 'Food neighbourhood', 90, ['shopping', 'architecture', 'cafes'], 'Walk off lunch through nearby streets, shops and cafés.', { tourist: 0, energy: 1 }),
+      make('food')('sunset', 'Find somewhere good for golden hour', 'Nearby', 60, ['views'], 'A simple end-of-day pause before dinner.', { tourist: 1 }),
+      make('food')('dinner', 'Choose a local dinner spot', 'Food neighbourhood', 100, ['food', 'nightlife'], 'Keep the evening centred on food rather than another sightseeing checklist.', { tourist: 1 }),
+
+      make('outdoors')('coffee', 'Coffee before heading outside', 'Nearby', 40, ['cafes'], 'A simple start before a longer walk.'),
+      make('outdoors')('morning', 'Take a long walk outdoors', 'Outdoors', 120, ['nature', 'views'], 'Use whatever the city offers: a park, waterfront, trail or open space.', { tourist: 0, energy: 2 }),
+      make('outdoors')('lunch', 'Lunch near the route', 'Outdoors', 75, ['food'], 'Stop somewhere convenient instead of travelling across town.', { tourist: 1 }),
+      make('outdoors')('afternoon', 'Spend time in a park or open space', 'Outdoors', 120, ['nature', 'beach', 'views'], 'Leave the afternoon open enough to slow down or stay longer if it is good.', { tourist: 1, energy: 1 }),
+      make('outdoors')('sunset', 'Watch the light from a good viewpoint', 'Outdoors', 75, ['views', 'nature'], 'Use the final light rather than squeezing in another attraction.', { tourist: 1, energy: 1 }),
+      make('outdoors')('dinner', 'Dinner near where you finish', 'Nearby', 90, ['food'], 'End the day without another long journey.', { tourist: 1 }),
+
+      make('neighbourhoods')('coffee', 'A slow café morning', 'Local neighbourhood', 60, ['cafes'], 'Start slowly and choose somewhere you would happily sit for a while.'),
+      make('neighbourhoods')('morning', 'Pick a neighbourhood and wander', 'Local neighbourhood', 120, ['architecture', 'history', 'shopping'], 'Follow the streets that look interesting rather than a strict checklist.', { tourist: 0, energy: 1 }),
+      make('neighbourhoods')('lunch', 'Eat where locals eat', 'Local neighbourhood', 75, ['food'], 'Keep lunch informal and close to the neighbourhood you are exploring.', { tourist: 0 }),
+      make('neighbourhoods')('afternoon', 'Browse shops, galleries or cafés', 'Local neighbourhood', 100, ['shopping', 'galleries', 'cafes'], 'A flexible block for whatever catches your attention.', { tourist: 0, energy: 1 }),
+      make('neighbourhoods')('sunset', 'Leave the afternoon open', 'Nearby', 60, ['views'], 'A little unplanned time is part of the day.', { tourist: 0, energy: 1 }),
+      make('neighbourhoods')('dinner', 'Dinner close to your base', 'Local neighbourhood', 90, ['food'], 'Finish somewhere convenient and easy.', { tourist: 0 }),
+    ],
+  }
+}
+
+const GENERIC_CACHE = new Map<string, Destination>()
+
+export const getDestination = (id: DestinationId): Destination => {
+  const known = DESTINATIONS.find((d) => d.id === id)
+  if (known) return known
+  const key = slug(id)
+  const cached = GENERIC_CACHE.get(key)
+  if (cached) return cached
+  const destination = createDestination(id)
+  GENERIC_CACHE.set(key, destination)
+  return destination
+}
