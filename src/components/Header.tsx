@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 const links = [
-    { to: '/examples', label: 'Examples' },
-  { to: '/about', label: 'About' },
+  { to: '/examples', label: 'Example trips' },
+  { to: '/about', label: 'About Ona' },
 ]
 
 export function Logo({ light = false }: { light?: boolean }) {
@@ -25,19 +25,13 @@ export default function Header() {
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `border-b-2 py-1 text-[0.95rem] font-medium transition-colors ${
-      isActive
-        ? 'text-navy'
-        : 'text-navy/60 hover:text-navy'
+      isActive ? 'text-navy' : 'text-navy/60 hover:text-navy'
     }`
 
   return (
     <header className="sticky top-0 z-30 bg-sand/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link
-          to="/"
-          aria-label="Ona home"
-          onClick={() => setOpen(false)}
-        >
+        <Link to="/" aria-label="Ona home" onClick={() => setOpen(false)}>
           <Logo />
         </Link>
 
@@ -52,7 +46,7 @@ export default function Header() {
             to="/plan"
             className="rounded-full bg-navy px-5 py-2.5 text-[0.95rem] font-medium text-sand transition-colors hover:bg-navy-soft"
           >
-            Plan a trip
+            Build a trip
           </Link>
         </nav>
 
@@ -88,7 +82,7 @@ export default function Header() {
             onClick={() => setOpen(false)}
             className="mt-2 rounded-full bg-navy px-5 py-3 text-center font-medium text-sand"
           >
-            Plan a trip
+            Build a trip
           </Link>
         </nav>
       )}
