@@ -1,4 +1,4 @@
-import { Minus, Plus, Search, Sparkles } from 'lucide-react'
+import { Minus, Plus, Search } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import SceneResult from '../components/SceneResult'
@@ -303,7 +303,6 @@ export default function Plan() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-7 py-4 font-bold text-sand transition-colors hover:bg-navy-soft disabled:cursor-not-allowed disabled:opacity-35 sm:w-auto"
             >
               Create my itinerary
-              <Sparkles size={17} />
             </button>
             {!canBuild && (
               <p className="mt-3 text-sm text-navy/55">Choose a destination to continue.</p>
