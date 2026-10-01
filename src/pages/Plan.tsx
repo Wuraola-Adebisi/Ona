@@ -2,7 +2,7 @@ import { Minus, Plus, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PreferencePills from "../components/PreferencePills";
-import SceneResult from "../components/SceneResult";
+import OnaResult from "../components/OnaResult";
 import TripCard from "../components/TripCard";
 import { DESTINATIONS, getDestination } from "../data/destinations";
 import {
@@ -11,17 +11,17 @@ import {
   INTEREST_ORDER,
   PACE_BLURBS,
   PACE_LABELS,
-  buildScene,
+  buildOna,
   describeParsed,
   readBrief,
-} from "../engine/sceneEngine";
+} from "../engine/onaEngine";
 import type {
   Avoid,
   Brief,
   DestinationId,
   Interest,
   Pace,
-  Scene,
+  Ona,
 } from "../types";
 
 const PLACEHOLDER =
@@ -48,7 +48,7 @@ export default function Plan() {
   );
   const [pace, setPace] = useState<Pace>(prefill?.pace ?? "relaxed");
   const [avoid, setAvoid] = useState<Avoid[]>(prefill?.avoid ?? []);
-  const [scene, setScene] = useState<Scene | null>(null);
+  const [ona, setOna] = useState<Ona | null>(null);
   const [building, setBuilding] = useState(false);
 
   const timer = useRef<number | undefined>(undefined);
@@ -110,21 +110,21 @@ export default function Plan() {
     setBuilding(true);
 
     timer.current = window.setTimeout(() => {
-      setScene(buildScene(brief));
+      setOna(buildOna(brief));
       setBuilding(false);
     }, 900);
   };
 
   const canBuild = merged().interests.length > 0;
 
-  if (scene) {
+  if (ona) {
     return (
-      <SceneResult
-        scene={scene}
-        onChange={setScene}
+      <OnaResult
+        ona={ona}
+        onChange={setOna}
         action={{
           label: "Change my trip",
-          onClick: () => setScene(null),
+          onClick: () => setOna(null),
         }}
       />
     );
@@ -167,15 +167,15 @@ export default function Plan() {
       <section className="mx-auto max-w-6xl px-5 pb-16 pt-12 sm:px-8 sm:pb-24 sm:pt-16">
         <div className="max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-sun-deep">
-            Build your trip
+            Shape your trip
           </p>
 
           <h1 className="mt-4 font-display text-5xl leading-[0.95] sm:text-7xl">
-            What do you want this trip to be like?
+            Where do you want to go, and how do you want to experience it?
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy/70">
-            Start with a sentence. Tell Scene where you are going, how long you
+            Start with a sentence. Tell Ona where you are going, how long you
             have, what you care about and anything you already know you want to
             avoid.
           </p>
@@ -202,7 +202,7 @@ export default function Plan() {
             <div className="mt-4 min-h-12" aria-live="polite">
               {parsed.unknownPlace && (
                 <p className="border-l-4 border-sun bg-sun/15 px-4 py-3 text-sm">
-                  Scene does not have {parsed.unknownPlace} in its current
+                  Ona does not have {parsed.unknownPlace} in its current
                   destination library. You can choose another destination below.
                 </p>
               )}
@@ -228,7 +228,7 @@ export default function Plan() {
               <div>
                 <p className="font-bold">You can be vague.</p>
                 <p className="mt-1 text-sm leading-relaxed text-navy/65">
-                  Scene is built to work from the way you naturally describe a
+                  Ona is built to work from the way you naturally describe a
                   trip. You can refine the details below if you want more
                   control.
                 </p>
@@ -256,7 +256,7 @@ export default function Plan() {
                 Refine it
               </p>
               <h2 className="mt-2 font-display text-3xl sm:text-4xl">
-                Give Scene a little more direction.
+                Give Ona a little more direction.
               </h2>
             </div>
 
@@ -403,7 +403,7 @@ export default function Plan() {
           </div>
 
           <div className="mt-12 border-t border-navy/15 pt-10">
-            <h3 className="font-display text-2xl">Anything to avoid?</h3>
+            <h3 className="font-display text-2xl">Keep out</h3>
 
             <div className="mt-4">
               <PreferencePills
@@ -433,7 +433,7 @@ export default function Plan() {
 
             {!canBuild && (
               <p className="text-sm text-navy/60">
-                Tell Scene at least one thing you want from the trip.
+                Tell Ona at least one thing you want from the trip.
               </p>
             )}
           </div>
