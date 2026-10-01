@@ -40,8 +40,8 @@ export default function Plan() {
   const prefill = (location.state as { brief?: Brief } | null)?.brief;
 
   const [text, setText] = useState("");
-  const [destId, setDestId] = useState<DestinationId>(
-    prefill?.destination ?? "lisbon",
+  const [destId, setDestId] = useState<DestinationId | null>(
+    prefill?.destination ?? null,
   );
   const [destinationQuery, setDestinationQuery] = useState("");
   const [days, setDays] = useState(prefill?.days ?? 4);
@@ -100,7 +100,7 @@ export default function Plan() {
   };
 
   const merged = (): Brief => ({
-    destination: destId,
+    destination: destId ?? "",
     days: Math.max(1, Math.min(days, maxDays)),
     interests: unique([...parsed.interests, ...interests]),
     pace,
@@ -128,7 +128,7 @@ export default function Plan() {
     }, 900);
   };
 
-  const canBuild = merged().interests.length > 0;
+  const canBuild = Boolean(destId) && merged().interests.length > 0;
 
   if (scene) {
     return (
@@ -239,8 +239,12 @@ export default function Plan() {
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-navy/50">
               Current brief
             </p>
-            <p className="mt-3 font-display text-3xl">{destination.name}</p>
-            <p className="mt-1 text-sm text-navy/65">{destination.tagline}</p>
+            <p className="mt-3 font-display text-3xl">
+              {destination?.name ?? "Choose a destination"}
+            </p>
+            <p className="mt-1 text-sm text-navy/65">
+              {destination?.tagline ?? "Pick somewhere from the library before you build."}
+            </p>
 
             <dl className="mt-7 grid grid-cols-2 gap-5 border-t border-navy/15 pt-5">
               <div>
@@ -496,7 +500,7 @@ export default function Plan() {
 
           {!canBuild && (
             <p className="text-sm text-navy/60">
-              Tell Ona at least one thing you want from the trip.
+              {!destId ? "Choose a destination first." : "Tell Ona at least one thing you want from the trip."}
             </p>
           )}
         </div>
