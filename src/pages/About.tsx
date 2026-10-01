@@ -2,8 +2,8 @@ import { ArrowRight, Check } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const PIPELINE = [
-  ['01', 'You describe the trip', 'Tell Scene what you want in ordinary language.'],
-  ['02', 'Scene interprets it', 'Preferences become meaningful constraints around pace, priorities, travel and time.'],
+  ['01', 'You describe the trip', 'Tell Ona what you want in ordinary language.'],
+  ['02', 'Ona interprets it', 'Preferences become meaningful constraints around pace, priorities, travel and time.'],
   ['03', 'The itinerary takes shape', 'Places are selected and grouped into days that make geographic and practical sense.'],
   ['04', 'The day gets sequenced', 'Stops are ordered, timed and given enough room to breathe.'],
   ['05', 'You can change it', 'A different mood, bad weather or low energy can change a day without throwing away the whole trip.'],
@@ -14,7 +14,7 @@ export default function About() {
     <div>
       <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-20">
         <p className="text-sm font-bold uppercase tracking-[0.18em] text-sun-deep">
-          About Scene
+          About Ona
         </p>
 
         <h1 className="mt-4 max-w-4xl font-display text-5xl leading-[0.92] sm:text-7xl">
@@ -22,7 +22,7 @@ export default function About() {
         </h1>
 
         <p className="mt-8 max-w-2xl text-xl leading-relaxed text-navy/70">
-          Scene is built around a simple idea: the same city can make very
+          Ona is built around a simple idea: the same city can make very
           different trips for very different people.
         </p>
       </section>
@@ -52,7 +52,7 @@ export default function About() {
             </p>
 
             <p>
-              Scene focuses on that gap: turning preferences, constraints and
+              Ona focuses on that gap: turning preferences, constraints and
               context into a trip that feels coherent rather than cramming as
               much as possible into a calendar.
             </p>
@@ -64,7 +64,7 @@ export default function About() {
         <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-sun-deep">
-              How Scene thinks
+              How Ona thinks
             </p>
 
             <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
@@ -139,7 +139,7 @@ export default function About() {
               </h2>
 
               <p className="mt-5 leading-relaxed text-sand/75">
-                Scene's product architecture separates understanding the
+                Ona's product architecture separates understanding the
                 traveller from generating the itinerary. That makes the
                 planning layer suitable for progressively richer AI
                 interpretation and real-world travel data as the product grows.
