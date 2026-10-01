@@ -24,7 +24,7 @@ export type Pace = 'relaxed' | 'balanced' | 'packed'
 export type Mood = 'relaxed' | 'balanced' | 'adventurous' | 'food-first' | 'culture-first'
 export type Avoid = 'tourist-traps' | 'crowds' | 'long-journeys' | 'late-nights'
 export type Adjust = 'slower' | 'rain' | 'tired'
-export type DestinationId = 'lisbon' | 'tokyo' | 'new-york' | 'cape-town'
+export type DestinationId = string
 
 export interface Activity {
   id: string
