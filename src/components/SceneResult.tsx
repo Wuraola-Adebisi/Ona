@@ -4,49 +4,49 @@ import {
   INTEREST_LABELS,
   MOODS,
   adjustDay,
-  buildScene,
+  buildOna,
   resetDay,
-} from "../engine/sceneEngine";
-import type { Adjust, Mood, Scene, ScheduledItem } from "../types";
+} from "../engine/onaEngine";
+import type { Adjust, Mood, Ona, ScheduledItem } from "../types";
 import ActivityPanel from "./ActivityPanel";
 import DestinationArt from "./DestinationArt";
 import InterpretationPanel from "./InterpretationPanel";
 import RouteDiagram from "./RouteDiagram";
-import SceneTimeline from "./SceneTimeline";
+import OnaTimeline from "./OnaTimeline";
 
 interface Props {
-  scene: Scene;
-  onChange: (scene: Scene) => void;
+  ona: Ona;
+  onChange: (ona: Ona) => void;
   action?: { label: string; onClick: () => void };
 }
 
 const two = (number: number) => String(number).padStart(2, "0");
 
-export default function SceneResult({ scene, onChange, action }: Props) {
+export default function OnaResult({ ona, onChange, action }: Props) {
   const [dayIdx, setDayIdx] = useState(0);
   const [open, setOpen] = useState<ScheduledItem | null>(null);
 
   const close = useCallback(() => setOpen(null), []);
 
-  const idx = Math.min(dayIdx, scene.days.length - 1);
-  const day = scene.days[idx];
-  const destination = scene.destination;
+  const idx = Math.min(dayIdx, ona.days.length - 1);
+  const day = ona.days[idx];
+  const destination = ona.destination;
 
   const meta = [
-    scene.ctx.moodLabel,
-    ...scene.brief.interests
+    ona.ctx.moodLabel,
+    ...ona.brief.interests
       .slice(0, 2)
       .map((interest) => INTEREST_LABELS[interest]),
   ].join(" · ");
 
   const changeMood = (mood: Mood) => {
     setOpen(null);
-    onChange(buildScene(scene.brief, mood, scene.pace));
+    onChange(buildOna(ona.brief, mood, ona.pace));
   };
 
   const adjust = (kind: Adjust) => {
     setOpen(null);
-    onChange(adjustDay(scene, idx, kind));
+    onChange(adjustDay(ona, idx, kind));
   };
 
   return (
@@ -60,7 +60,7 @@ export default function SceneResult({ scene, onChange, action }: Props) {
               className="mb-10 inline-flex items-center gap-2 text-sm font-bold text-sand/65 transition-colors hover:text-sand"
             >
               <ArrowLeft size={16} />
-              {action?.label ?? "Change my trip"}
+              {action?.label ?? "Edit trip"}
             </button>
 
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-sun">
@@ -73,7 +73,7 @@ export default function SceneResult({ scene, onChange, action }: Props) {
 
             <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-sand/70">
               <span className="font-bold text-sand">
-                {scene.days.length} {scene.days.length === 1 ? "day" : "days"}
+                {ona.days.length} {ona.days.length === 1 ? "day" : "days"}
               </span>
               <span>{meta}</span>
             </div>
@@ -90,15 +90,15 @@ export default function SceneResult({ scene, onChange, action }: Props) {
         <section>
           <div className="max-w-2xl">
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-sun-deep">
-              Shape the trip
+              Tune the trip
             </p>
 
             <h2 className="mt-2 font-display text-3xl sm:text-4xl">
-              What should the trip feel like?
+              How should the trip feel?
             </h2>
 
             <p className="mt-2 text-navy/65">
-              Change the overall mood and Scene will rebuild the itinerary
+              Change the overall mood and Ona will rebuild the itinerary
               around it.
             </p>
           </div>
@@ -112,10 +112,10 @@ export default function SceneResult({ scene, onChange, action }: Props) {
               <button
                 key={mood.id}
                 type="button"
-                aria-pressed={scene.mood === mood.id}
+                aria-pressed={ona.mood === mood.id}
                 onClick={() => changeMood(mood.id)}
                 className={`rounded-full border-2 px-5 py-2.5 font-medium transition-colors ${
-                  scene.mood === mood.id
+                  ona.mood === mood.id
                     ? "border-navy bg-navy text-sand"
                     : "border-navy/25 bg-linen hover:border-navy"
                 }`}
@@ -127,14 +127,14 @@ export default function SceneResult({ scene, onChange, action }: Props) {
         </section>
 
         <section className="mt-16">
-          <InterpretationPanel data={scene.interpretation} />
+          <InterpretationPanel data={ona.interpretation} />
         </section>
 
-        <section className="mt-16" aria-label="Your itinerary">
+        <section className="mt-16" aria-label="Your days">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.14em] text-sun-deep">
-                Your itinerary
+                Your days
               </p>
               <h2 className="mt-2 font-display text-3xl sm:text-4xl">
                 {day.zone.title}
@@ -152,7 +152,7 @@ export default function SceneResult({ scene, onChange, action }: Props) {
             aria-label="Trip days"
             className="mt-7 flex gap-3 overflow-x-auto pb-2"
           >
-            {scene.days.map((item, index) => (
+            {ona.days.map((item, index) => (
               <button
                 key={item.index}
                 role="tab"
@@ -180,12 +180,12 @@ export default function SceneResult({ scene, onChange, action }: Props) {
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_20rem] lg:gap-14">
             <div role="tabpanel">
-              <SceneTimeline
+              <OnaTimeline
                 day={day}
                 activeId={open?.activity.id ?? null}
                 onOpen={setOpen}
                 onAdjust={adjust}
-                onReset={() => onChange(resetDay(scene, idx))}
+                onReset={() => onChange(resetDay(ona, idx))}
               />
             </div>
 
