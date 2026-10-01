@@ -151,7 +151,7 @@ export default function About() {
             to="/plan"
             className="mt-10 inline-flex items-center gap-2 rounded-full bg-sun px-7 py-4 font-bold text-navy transition-colors hover:bg-[#eaa060]"
           >
-            Plan a trip
+            Build a trip
             <ArrowRight size={18} />
           </Link>
         </div>
