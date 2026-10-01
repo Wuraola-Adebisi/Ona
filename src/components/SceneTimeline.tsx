@@ -13,9 +13,9 @@ interface Props {
 }
 
 const ADJUSTMENTS: { kind: Adjust; ask: string; action: string; Icon: typeof Clock }[] = [
-  { kind: 'slower', ask: 'The day feels too busy?', action: 'Make it slower', Icon: Clock },
-  { kind: 'rain', ask: 'Rain on this day?', action: 'Rework the day', Icon: CloudRain },
-  { kind: 'tired', ask: 'Feeling tired?', action: 'Give me an easier evening', Icon: Moon },
+  { kind: 'slower', ask: 'The day feels too busy?', action: 'Slow this day down', Icon: Clock },
+  { kind: 'rain', ask: 'Rain on this day?', action: 'Plan around rain', Icon: CloudRain },
+  { kind: 'tired', ask: 'Feeling tired?', action: 'Ease up tonight', Icon: Moon },
 ]
 
 const grid = 'grid grid-cols-[3.75rem_1fr] gap-x-3 sm:grid-cols-[4.5rem_1fr] sm:gap-x-5'

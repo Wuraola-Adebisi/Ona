@@ -9,7 +9,7 @@ export default function Footer() {
           <Logo light />
 
           <p className="mt-5 max-w-sm leading-relaxed text-sand/65">
-            Scene helps you turn the way you want to travel into a trip that
+            Ona helps you turn the way you want to travel into a trip that
             actually fits.
           </p>
 
@@ -22,7 +22,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <p className="font-bold">Scene</p>
+          <p className="font-bold">Ona</p>
 
           <ul className="mt-4 space-y-3 text-sand/70">
             <li>
@@ -37,7 +37,7 @@ export default function Footer() {
             </li>
             <li>
               <Link className="hover:text-sun" to="/examples">
-                Trips
+                Examples
               </Link>
             </li>
             <li>
@@ -68,7 +68,7 @@ export default function Footer() {
 
       <div className="border-t border-sand/15">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-5 text-sm text-sand/45 sm:px-8 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 Scene. All rights reserved.</p>
+          <p>© 2026 Ona. All rights reserved.</p>
           <p>Travel planning shaped around you.</p>
         </div>
       </div>

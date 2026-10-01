@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-sand: #f2e6d0;
+  --color-sand: #f4ead8;
   --color-sand-deep: #e7d6b8;
-  --color-linen: #faf3e4;
-  --color-navy: #14233f;
+  --color-linen: #fffaf0;
+  --color-navy: #18253d;
   --color-navy-soft: #24375c;
-  --color-sun: #e08e45;
+  --color-sun: #e79545;
   --color-sun-deep: #b8621f;
   --color-sky: #8aa4c0;
   --color-mist: #d3dfe9;
@@ -52,5 +52,20 @@
   * {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+}
+
+
+@layer components {
+  .ona-eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.2em];
+  }
+
+  .ona-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-navy px-7 py-4 font-bold text-sand transition-transform duration-200 hover:-translate-y-0.5 hover:bg-navy-soft;
+  }
+
+  .ona-panel {
+    @apply bg-linen shadow-[0_20px_60px_rgba(24,37,61,0.08)];
   }
 }

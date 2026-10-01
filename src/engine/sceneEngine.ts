@@ -1,4 +1,5 @@
 import { DESTINATIONS, getDestination } from '../data/destinations'
+import { findDestinationInText } from '../data/destinationCatalog'
 import type {
   Activity,
   Adjust,
@@ -219,13 +220,6 @@ const INTEREST_PATTERNS: [Interest, RegExp][] = [
   ['shopping', /\bshop|vintage|\bmarkets?\b|boutique/i],
 ]
 
-const DEST_PATTERNS: [DestinationId, RegExp][] = [
-  ['lisbon', /lisbon|lisboa/i],
-  ['tokyo', /tokyo/i],
-  ['new-york', /new york|\bnyc\b/i],
-  ['cape-town', /cape town/i],
-]
-
 const PLACE_RE =
   /(?:[Gg]oing to|[Tt]rip to|[Tt]ravell?ing to|[Vv]isiting|[Hh]eading to|[Oo]ff to|[Ff]lying to|[Ff]ly to)\s+([A-Z][\p{L}'-]+(?:\s[A-Z][\p{L}'-]+)*)/u
 
@@ -234,12 +228,7 @@ export function readBrief(text: string): Parsed {
   const t = text.trim()
   if (!t) return out
 
-  for (const [id, re] of DEST_PATTERNS) {
-    if (re.test(t)) {
-      out.destination = id
-      break
-    }
-  }
+  out.destination = findDestinationInText(t)
   if (!out.destination) {
     const m = PLACE_RE.exec(t)
     if (m) out.unknownPlace = m[1]
@@ -318,12 +307,37 @@ const rolesFor = (pace: Pace, noLate: boolean): Role[] =>
 
 function pickDay(zone: Zone, dest: Destination, ctx: Ctx, roles: Role[]): Pick[] {
   const picks: Pick[] = []
+  const usedTags = new Set<Interest>()
+
   for (const role of roles) {
     const cands = dest.activities.filter((a) => a.zone === zone.id && a.role === role)
     if (!cands.length) continue
-    const best = [...cands].sort((a, b) => scoreActivity(b, ctx) - scoreActivity(a, ctx))[0]
+
+    const rank = (a: Activity) => {
+      let score = scoreActivity(a, ctx)
+
+      // Avoid building a day where every stop satisfies the same interest.
+      // Repeated tags are still useful, but a new relevant tag gets a small
+      // diversity bonus so the itinerary feels like a trip, not a keyword list.
+      const newTags = a.tags.filter((tag) => !usedTags.has(tag))
+      score += Math.min(newTags.length, 2) * 0.75
+
+      // Keep the main meal tied to food when food is a stated priority.
+      if (role === 'lunch' || role === 'dinner') {
+        if (ctx.interests.includes('food') && a.tags.includes('food')) score += 1.5
+      }
+
+      // Prefer an explicit interest over a mood-only match when both are available.
+      if (ctx.interests.some((interest) => a.tags.includes(interest))) score += 0.5
+
+      return score
+    }
+
+    const best = [...cands].sort((a, b) => rank(b) - rank(a))[0]
     picks.push({ activity: best, role, cross: false })
+    best.tags.forEach((tag) => usedTags.add(tag))
   }
+
   return picks
 }
 
@@ -543,7 +557,7 @@ export function adjustDay(scene: Scene, dayIndex: number, kind: Adjust): Scene {
       picks = day.picks.filter((p) => p !== drop)
       notice = `Removed ${drop.activity.name}, added breathing room between stops and moved the start 30 minutes later.`
     } else {
-      notice = 'This day already has only two main stops, so Scene added more time between them and a later start.'
+      notice = 'This day already has only two main stops, so Ona added more time between them and a later start.'
     }
     return replaceDay(scene, {
       ...day,

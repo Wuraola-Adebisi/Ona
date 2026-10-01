@@ -3,8 +3,7 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 const links = [
-  { to: '/how-it-works', label: 'How it works' },
-  { to: '/examples', label: 'Trips' },
+    { to: '/examples', label: 'Examples' },
   { to: '/about', label: 'About' },
 ]
 
@@ -15,7 +14,7 @@ export function Logo({ light = false }: { light?: boolean }) {
         light ? 'text-sand' : 'text-navy'
       }`}
     >
-      Scene
+      Ona
       <span aria-hidden className="size-3 rounded-full bg-sun" />
     </span>
   )
@@ -27,22 +26,22 @@ export default function Header() {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `border-b-2 py-1 text-[0.95rem] font-medium transition-colors ${
       isActive
-        ? 'border-sun'
-        : 'border-transparent hover:border-navy/40'
+        ? 'text-navy'
+        : 'text-navy/60 hover:text-navy'
     }`
 
   return (
-    <header className="sticky top-0 z-30 border-b border-navy/15 bg-sand/95 backdrop-blur">
+    <header className="sticky top-0 z-30 bg-sand/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
         <Link
           to="/"
-          aria-label="Scene home"
+          aria-label="Ona home"
           onClick={() => setOpen(false)}
         >
           <Logo />
         </Link>
 
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
+        <nav className="hidden items-center gap-9 md:flex" aria-label="Main">
           {links.map((link) => (
             <NavLink key={link.to} to={link.to} className={linkClass}>
               {link.label}
