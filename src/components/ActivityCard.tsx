@@ -39,7 +39,7 @@ export default function ActivityCard({ item, active, onOpen }: Props) {
       </p>
       <p className="mt-2 max-w-prose">{a.note}</p>
       <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium underline-offset-4 group-hover:underline">
-        <Sparkles size={14} aria-hidden /> Why Scene chose this
+        <Sparkles size={14} aria-hidden /> Why Ona chose this
       </span>
     </button>
   )
