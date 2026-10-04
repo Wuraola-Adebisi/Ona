@@ -2,6 +2,7 @@ import { Outlet, Route, Routes } from 'react-router-dom'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import ScrollToTop from './components/ScrollToTop'
+import Seo from './components/Seo'
 import About from './pages/About'
 import Examples from './pages/Examples'
 import Home from './pages/Home'
@@ -12,6 +13,7 @@ import Plan from './pages/Plan'
 function Layout() {
   return (
     <div className="flex min-h-screen flex-col">
+      <Seo />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded focus:bg-navy focus:px-4 focus:py-2 focus:text-sand"
