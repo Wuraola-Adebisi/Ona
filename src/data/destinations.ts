@@ -1,4 +1,4 @@
-import type { Activity, Destination, DestinationId, Interest, Role } from '../types'
+import type { Activity, Destination, DestinationId, Interest, Palette, Role } from '../types'
 
 // Sample data for the demo. Venue names are real places, but hours, prices and
 // availability are not modelled. Check them before travelling.
