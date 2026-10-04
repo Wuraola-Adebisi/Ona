@@ -9,7 +9,7 @@ export default function InterpretationPanel({ data }: { data: Interpretation }) 
   ]
   return (
     <section aria-labelledby="read-title" className="rounded-tl-[3rem] rounded-br-[3rem] bg-mist/70 p-6 sm:p-9">
-      <h2 id="read-title" className="font-display text-3xl">How Scene read your brief</h2>
+      <h2 id="read-title" className="font-display text-3xl">How Ona read your brief</h2>
       <p className="mt-2 max-w-2xl text-navy/75">
         Your words became planning constraints. The itinerary below is built from these, and every stop can tell you which one put it there.
       </p>
