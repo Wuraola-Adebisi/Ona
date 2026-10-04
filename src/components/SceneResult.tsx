@@ -1,15 +1,15 @@
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
-import { INTEREST_LABELS, MOODS, adjustDay, buildScene } from '../engine/sceneEngine'
-import type { Mood, Scene, ScheduledItem } from '../types'
+import { INTEREST_LABELS, MOODS, adjustDay, buildScene, resetDay } from '../engine/sceneEngine'
+import type { Adjust, Mood, Ona, ScheduledItem } from '../types'
 import ActivityPanel from './ActivityPanel'
 import DestinationArt from './DestinationArt'
 import RouteDiagram from './RouteDiagram'
 import SceneTimeline from './SceneTimeline'
 
 interface Props {
-  scene: Scene
-  onChange: (scene: Scene) => void
+  scene: Ona
+  onChange: (scene: Ona) => void
   action?: { label: string; onClick: () => void }
 }
 
@@ -28,90 +28,112 @@ export default function SceneResult({ scene, onChange, action }: Props) {
     setOpen(null)
   }
 
-  const adjust = (kind: 'slower' | 'rain' | 'tired') => onChange(adjustDay(scene, idx, kind))
+  const adjust = (kind: Adjust) => onChange(adjustDay(scene, idx, kind))
   const close = () => setOpen(null)
 
   const priorities = scene.brief.interests
     .slice(0, 3)
-    .map((interest) => INTEREST_LABELS[interest] ?? interest)
+    .map((interest) => INTEREST_LABELS[interest])
     .join(', ')
 
   if (!day) return null
 
   return (
-    <main className="min-h-screen bg-sand text-navy">
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
-        <button
-          type="button"
-          onClick={action?.onClick}
-          className="inline-flex items-center gap-2 text-sm font-bold"
-        >
-          <ArrowLeft size={17} />
-          {action?.label ?? 'Back to planning'}
-        </button>
-        <span className="font-display text-2xl">Ona</span>
+    <div>
+      <header className="bg-navy text-sand">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 sm:px-8 sm:py-14 md:grid-cols-[1fr_20rem] md:items-end">
+          <div>
+            {action && (
+              <button
+                type="button"
+                onClick={action.onClick}
+                className="mb-9 inline-flex items-center gap-2 text-sm font-bold text-sand/65 hover:text-sand"
+              >
+                <ArrowLeft size={16} />
+                {action.label}
+              </button>
+            )}
+
+            <p className="text-sm font-bold uppercase tracking-[0.16em] text-sun">
+              Your itinerary
+            </p>
+            <h1 className="mt-3 font-display text-[clamp(3.5rem,10vw,7rem)] leading-[0.82]">
+              {scene.destination.name}
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-sand/70">
+              {scene.days.length} days · {scene.interpretation.pace.toLowerCase()} pace
+              {priorities ? ' · built around ' + priorities.toLowerCase() : ''}
+            </p>
+          </div>
+
+          <DestinationArt
+            destination={scene.destination}
+            className="hidden aspect-square w-full rounded-t-[7rem] md:block"
+          />
+        </div>
       </header>
 
-      <section className="mx-auto max-w-7xl px-5 pb-10 sm:px-8">
-        <div className="overflow-hidden rounded-[2rem] bg-navy text-sand">
-          <div className="grid min-h-[360px] lg:grid-cols-[1.05fr_.95fr]">
-            <div className="flex flex-col justify-end p-7 sm:p-10 lg:p-14">
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-sun">
-                Your trip
-              </p>
-              <h1 className="mt-3 max-w-3xl font-display text-5xl leading-[.95] sm:text-6xl lg:text-7xl">
-                {scene.destination.name}
-              </h1>
-              <p className="mt-5 max-w-xl text-base leading-7 text-sand/70">
-                {scene.days.length} days · {scene.interpretation.pace.toLowerCase()} pace
-                {priorities ? ' · with ' + priorities.toLowerCase() + ' in mind' : ''}
-              </p>
-            </div>
-            <DestinationArt destination={scene.destination} className="min-h-[300px] h-full" />
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-5 pb-20 sm:px-8">
-        <div className="mb-8 flex flex-wrap gap-2">
-          {scene.days.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => {
-                setDayIdx(index)
-                setOpen(null)
-              }}
-              className={`rounded-full border-2 px-4 py-2 text-sm font-bold transition-colors ${
-                idx === index ? 'border-navy bg-navy text-sand' : 'border-navy/20 bg-linen hover:border-navy'
-              }`}
-            >
-              Day {two(index + 1)}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-          <div>
-            <div className="mb-7">
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-sun-deep">
-                Day {two(idx + 1)}
-              </p>
-              <h2 className="mt-2 font-display text-4xl sm:text-5xl">{day.title}</h2>
-              <p className="mt-3 max-w-2xl text-base leading-7 text-navy/60">
-                {day.zone.blurb}
-              </p>
-            </div>
-
-            <SceneTimeline items={day.items} onOpen={setOpen} />
+      <main className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+        <section>
+          <div className="max-w-2xl">
+            <p className="text-sm font-bold uppercase tracking-[0.14em] text-sun-deep">
+              Your days
+            </p>
+            <h2 className="mt-2 font-display text-4xl sm:text-5xl">
+              Here is the plan.
+            </h2>
+            <p className="mt-3 text-navy/65">
+              Each day keeps nearby places together. Tap a stop for more detail.
+            </p>
           </div>
 
-          <aside className="lg:sticky lg:top-6 lg:self-start">
-            <RouteDiagram items={day.items} activeId={open?.activity.id ?? null} title={day.zone.title} onOpen={setOpen} />
-          </aside>
-        </div>
+          <div role="tablist" aria-label="Trip days" className="mt-8 flex gap-2 overflow-x-auto border-b-2 border-navy pb-px">
+            {scene.days.map((item, index) => (
+              <button
+                key={item.index}
+                role="tab"
+                type="button"
+                aria-selected={index === idx}
+                onClick={() => {
+                  setDayIdx(index)
+                  setOpen(null)
+                }}
+                className={
+                  'min-w-36 shrink-0 border-b-4 px-4 pb-4 pt-2 text-left transition-colors ' +
+                  (index === idx
+                    ? 'border-sun text-navy'
+                    : 'border-transparent text-navy/50 hover:text-navy')
+                }
+              >
+                <span className="block text-xs font-bold uppercase tracking-[0.12em]">
+                  Day {two(index + 1)}
+                </span>
+                <span className="mt-1 block font-display text-xl leading-tight">
+                  {item.zone.title}
+                </span>
+              </button>
+            ))}
+          </div>
 
-        {open && <ActivityPanel item={open} onClose={close} />}
+          <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16">
+            <div role="tabpanel">
+              <SceneTimeline
+                day={day}
+                activeId={open?.activity.id ?? null}
+                onOpen={setOpen}
+                onAdjust={adjust}
+                onReset={() => onChange(resetDay(scene, idx))}
+              />
+            </div>
+
+            <aside className="lg:sticky lg:top-24 lg:self-start">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-navy/45">
+                Route for the day
+              </p>
+              <RouteDiagram items={day.items} activeId={open?.activity.id ?? null} title={day.zone.title} onOpen={setOpen} />
+            </aside>
+          </div>
+        </section>
 
         <section className="mt-14 border-t border-navy/15 pt-8">
           <button
@@ -170,7 +192,19 @@ export default function SceneResult({ scene, onChange, action }: Props) {
             </div>
           )}
         </section>
-      </section>
-    </main>
+
+        <div className="mt-14 border-t border-navy/15 pt-7">
+          <button
+            type="button"
+            onClick={action?.onClick}
+            className="font-bold underline decoration-sun decoration-2 underline-offset-4"
+          >
+            Change the trip
+          </button>
+        </div>
+      </main>
+
+      <ActivityPanel item={open} onClose={close} />
+    </div>
   )
 }
