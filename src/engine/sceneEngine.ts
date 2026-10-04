@@ -15,7 +15,7 @@ import type {
   Pace,
   Pick,
   Role,
-  Scene,
+  Ona,
   ScheduledItem,
   Zone,
 } from '../types'
@@ -264,7 +264,7 @@ export function readBrief(text: string): Parsed {
   return out
 }
 
-/** Short, human-readable chips describing what Scene picked up from free text. */
+/** Short, human-readable chips describing what Ona picked up from free text. */
 export function describeParsed(p: Parsed): string[] {
   const chips: string[] = []
   if (p.destination) chips.push(getDestination(p.destination).name)
@@ -498,7 +498,7 @@ export function interpret(brief: Brief, ctx: Ctx): Interpretation {
 
 // ------------------------------------------------------------------ building
 
-export function buildScene(brief: Brief, mood?: Mood, prevPace?: Pace): Scene {
+export function buildScene(brief: Brief, mood?: Mood, prevPace?: Pace): Ona {
   const destination = getDestination(brief.destination)
   const m = mood ?? paceToMood(brief.pace)
   const pace: Pace =
@@ -518,18 +518,18 @@ export function buildScene(brief: Brief, mood?: Mood, prevPace?: Pace): Scene {
 
 // ------------------------------------------------------------------ adjusting a day
 
-const usedIds = (scene: Scene): Set<string> => {
+const usedIds = (scene: Ona): Set<string> => {
   const ids = new Set<string>()
   scene.days.forEach((d) => d.picks.forEach((p) => ids.add(p.activity.id)))
   return ids
 }
 
-const replaceDay = (scene: Scene, day: Day): Scene => ({
+const replaceDay = (scene: Ona, day: Day): Ona => ({
   ...scene,
   days: scene.days.map((d) => (d.index === day.index ? withItems(day, scene.ctx) : d)),
 })
 
-export function resetDay(scene: Scene, dayIndex: number): Scene {
+export function resetDay(scene: Ona, dayIndex: number): Ona {
   const day = scene.days[dayIndex]
   if (!day) return scene
   return replaceDay(scene, {
@@ -542,7 +542,7 @@ export function resetDay(scene: Scene, dayIndex: number): Scene {
   })
 }
 
-export function adjustDay(scene: Scene, dayIndex: number, kind: Adjust): Scene {
+export function adjustDay(scene: Ona, dayIndex: number, kind: Adjust): Ona {
   const day = scene.days[dayIndex]
   if (!day) return scene
   const { ctx, destination } = scene
