@@ -1,15 +1,15 @@
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { INTEREST_LABELS, MOODS, adjustDay, buildScene, resetDay } from '../engine/sceneEngine'
-import type { Adjust, Mood, Ona, ScheduledItem } from '../types'
+import type { Adjust, Mood, Scene, ScheduledItem } from '../types'
 import ActivityPanel from './ActivityPanel'
 import DestinationArt from './DestinationArt'
 import RouteDiagram from './RouteDiagram'
 import SceneTimeline from './SceneTimeline'
 
 interface Props {
-  scene: Ona
-  onChange: (scene: Ona) => void
+  scene: Scene
+  onChange: (scene: Scene) => void
   action?: { label: string; onClick: () => void }
 }
 
