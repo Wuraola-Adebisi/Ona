@@ -7,7 +7,6 @@ import { createDestinationOption, searchDestinations } from '../data/destination
 import {
   AVOID_LABELS,
   INTEREST_LABELS,
-  INTEREST_ORDER,
   PACE_LABELS,
   buildScene,
   readBrief,
@@ -30,7 +29,7 @@ export default function Plan() {
   const [destId, setDestId] = useState<DestinationId | null>(prefill?.destination ?? null)
   const [destinationQuery, setDestinationQuery] = useState('')
   const [days, setDays] = useState(prefill?.days ?? 4)
-  const [interests, setInterests] = useState<Interest[]>(prefill?.interests ?? [])
+  const [interests] = useState<Interest[]>(prefill?.interests ?? [])
   const [pace, setPace] = useState<Pace>(prefill?.pace ?? 'balanced')
   const [avoid, setAvoid] = useState<Avoid[]>(prefill?.avoid ?? [])
   const [showMore, setShowMore] = useState(false)
