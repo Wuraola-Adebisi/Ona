@@ -12,8 +12,8 @@ const SAMPLES = [
 
 const STAGES = [
   { title: 'You said', hint: 'A trip described in ordinary words.' },
-  { title: 'Scene understands', hint: 'Words turned into planning constraints.' },
-  { title: 'Scene builds', hint: 'Constraints turned into days.' },
+  { title: 'Ona understands', hint: 'Words turned into planning constraints.' },
+  { title: 'Ona builds', hint: 'Constraints turned into days.' },
 ]
 
 export default function HowItWorks() {
@@ -34,14 +34,14 @@ export default function HowItWorks() {
 
   const it = interpret(scene.brief, scene.ctx)
   const assumed: string[] = []
-  if (!parsed.destination) assumed.push(`No city mentioned, so Scene used ${getDestination(scene.brief.destination).name}.`)
-  if (!parsed.days) assumed.push(`No length mentioned, so Scene used ${scene.brief.days} days.`)
+  if (!parsed.destination) assumed.push(`No city mentioned, so Ona used ${getDestination(scene.brief.destination).name}.`)
+  if (!parsed.days) assumed.push(`No length mentioned, so Ona used ${scene.brief.days} days.`)
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       <h1 className="font-display text-5xl leading-none sm:text-7xl">How it works</h1>
       <p className="mt-5 max-w-2xl text-lg text-navy/75">
-        Scene does not paste a list of attractions. It turns what you said into constraints first, then plans against them. Pick a sentence
+        Ona does not paste a list of attractions. It turns what you said into constraints first, then plans against them. Pick a sentence
         and step through it.
       </p>
 
@@ -97,14 +97,14 @@ export default function HowItWorks() {
                 onClick={() => setStage(1)}
                 className="mt-8 rounded-full bg-navy px-6 py-3 font-medium text-sand hover:bg-navy-soft"
               >
-                See what Scene understands
+                See what Ona understands
               </button>
             </div>
           )}
 
           {stage === 1 && (
             <div>
-              <p className="text-sm font-bold">Scene understands</p>
+              <p className="text-sm font-bold">Ona understands</p>
               <dl className="mt-5 grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4">
                 {[
                   ['Pace', it.pace],
@@ -133,7 +133,7 @@ export default function HowItWorks() {
                 <div>
                   <h3 className="font-bold">Avoiding</h3>
                   <p className="mt-2 text-navy/80">{it.avoid.length ? it.avoid.join(', ') : 'Nothing specific.'}</p>
-                  <h3 className="mt-5 font-bold">Words Scene picked up</h3>
+                  <h3 className="mt-5 font-bold">Words Ona picked up</h3>
                   <p className="mt-2 text-navy/80">{chips.length ? chips.join(', ') : 'Nothing yet.'}</p>
                 </div>
               </div>
@@ -143,7 +143,7 @@ export default function HowItWorks() {
                 onClick={() => setStage(2)}
                 className="mt-8 rounded-full bg-navy px-6 py-3 font-medium text-sand hover:bg-navy-soft"
               >
-                See what Scene builds
+                See what Ona builds
               </button>
             </div>
           )}
@@ -151,7 +151,7 @@ export default function HowItWorks() {
           {stage === 2 && (
             <div>
               <p className="text-sm font-bold">
-                Scene builds {scene.days.length} {scene.days.length === 1 ? 'day' : 'days'} in {scene.destination.name}
+                Ona builds {scene.days.length} {scene.days.length === 1 ? 'day' : 'days'} in {scene.destination.name}
               </p>
               <ol className="mt-5 grid gap-x-8 gap-y-6 sm:grid-cols-2">
                 {scene.days.map((d) => (
