@@ -15,7 +15,7 @@ import type {
   Pace,
   Pick,
   Role,
-  Ona,
+  Scene,
   ScheduledItem,
   Zone,
 } from '../types'
@@ -264,7 +264,7 @@ export function readBrief(text: string): Parsed {
   return out
 }
 
-/** Short, human-readable chips describing what Ona picked up from free text. */
+/** Short, human-readable chips describing what Scene picked up from free text. */
 export function describeParsed(p: Parsed): string[] {
   const chips: string[] = []
   if (p.destination) chips.push(getDestination(p.destination).name)
@@ -498,7 +498,7 @@ export function interpret(brief: Brief, ctx: Ctx): Interpretation {
 
 // ------------------------------------------------------------------ building
 
-export function buildScene(brief: Brief, mood?: Mood, prevPace?: Pace): Ona {
+export function buildScene(brief: Brief, mood?: Mood, prevPace?: Pace): Scene {
   const destination = getDestination(brief.destination)
   const m = mood ?? paceToMood(brief.pace)
   const pace: Pace =
@@ -518,18 +518,18 @@ export function buildScene(brief: Brief, mood?: Mood, prevPace?: Pace): Ona {
 
 // ------------------------------------------------------------------ adjusting a day
 
-const usedIds = (scene: Ona): Set<string> => {
+const usedIds = (scene: Scene): Set<string> => {
   const ids = new Set<string>()
   scene.days.forEach((d) => d.picks.forEach((p) => ids.add(p.activity.id)))
   return ids
 }
 
-const replaceDay = (scene: Ona, day: Day): Ona => ({
+const replaceDay = (scene: Scene, day: Day): Scene => ({
   ...scene,
   days: scene.days.map((d) => (d.index === day.index ? withItems(day, scene.ctx) : d)),
 })
 
-export function resetDay(scene: Ona, dayIndex: number): Ona {
+export function resetDay(scene: Scene, dayIndex: number): Scene {
   const day = scene.days[dayIndex]
   if (!day) return scene
   return replaceDay(scene, {
@@ -542,7 +542,7 @@ export function resetDay(scene: Ona, dayIndex: number): Ona {
   })
 }
 
-export function adjustDay(scene: Ona, dayIndex: number, kind: Adjust): Ona {
+export function adjustDay(scene: Scene, dayIndex: number, kind: Adjust): Scene {
   const day = scene.days[dayIndex]
   if (!day) return scene
   const { ctx, destination } = scene
@@ -557,7 +557,7 @@ export function adjustDay(scene: Ona, dayIndex: number, kind: Adjust): Ona {
       picks = day.picks.filter((p) => p !== drop)
       notice = `Removed ${drop.activity.name}, added breathing room between stops and moved the start 30 minutes later.`
     } else {
-      notice = 'This day already has only two main stops, so Ona added more time between them and a later start.'
+      notice = 'This day already has only two main stops, so Scene added more time between them and a later start.'
     }
     return replaceDay(scene, {
       ...day,
