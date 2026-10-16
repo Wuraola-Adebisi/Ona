@@ -85,8 +85,7 @@ export function Privacy() {
         <h2>Questions</h2>
         <p>
           If you have a question about how Ona handles information, contact
-          the person responsible for the product through the contact details
-          provided on the product or portfolio site.
+          us at hello@planwithona.com
         </p>
       </section>
     </Page>
